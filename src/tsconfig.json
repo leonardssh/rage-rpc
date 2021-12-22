@@ -1,12 +1,4 @@
 {
 	"extends": "../tsconfig.base.json",
-	"compilerOptions": {
-		"baseUrl": "./",
-		"paths": {
-			"@shared/*": ["../shared/*"],
-			"rage-rpc": ["../../rpc/index.ts"],
-			"@/*": ["./*"]
-		}
-	},
 	"include": ["./**/*.ts"]
 }

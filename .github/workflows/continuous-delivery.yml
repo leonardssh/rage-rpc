@@ -65,14 +65,15 @@ jobs:
           TARGET_BRANCH="build"
           git clone $REPO out -b $TARGET_BRANCH
 
+          echo -e "\n# Move d.ts and remove src folder"
+          mv dist/src/index.d.ts dist/
+          rm -rf dist/src
+
           echo -e "\n# Move the generated code to the newly-checked-out repo, to be committed and pushed"
           rsync -vaI package.json out/
           rsync -vaI README.md out/
           rsync -vaI LICENSE out/
-          rsync -vaI dist/index.js out/dist/index.js
-          rsync -vaI dist/index.esm.mjs out/dist/index.esm.mjs
-          rsync -vaI dist/rage-rpc.umd.js out/dist/rage-rpc.umd.js
-          rsync -vaI dist/src/index.d.ts out/dist/index.d.ts
+          rsync -vaI dist/ out/
 
           echo -e "\n# Commit and push"
           cd out
