@@ -315,7 +315,7 @@
 			}
 		],
 		"prefer-numeric-literals": "off",
-		"prefer-promise-reject-errors": "error",
+		"prefer-promise-reject-errors": "off",
 		"prefer-rest-params": "warn",
 		"prefer-spread": "error",
 		"prefer-template": "warn",

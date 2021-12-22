@@ -56,6 +56,9 @@ jobs:
       - name: Build
         run: yarn build --configProduction
 
+      - name: Build Types
+        run: pnpm run types
+
       - name: Publish
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
@@ -66,7 +69,6 @@ jobs:
           git clone $REPO out -b $TARGET_BRANCH
 
           echo -e "\n# Move d.ts and remove src folder"
-          mv dist/src/index.d.ts dist/
           rm -rf dist/src
 
           echo -e "\n# Move the generated code to the newly-checked-out repo, to be committed and pushed"
