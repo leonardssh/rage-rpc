@@ -1,42 +1,38 @@
 > fork of [micaww/rage-rpc](https://github.com/micaww/rage-rpc/)
 
--   [Motivation](#motivation)
--   [Installation](#installation)
--   [Examples](#examples)
-    -   [Server to Client](#server-to-client)
-    -   [CEF to Server](#cef-to-server)
-    -   [Client to Server](#client-to-server)
--   [API](#api)
-
-    -   [Universal](#universal)
-
-        -   [setDebugMode(state)](#setdebugmodestate)
-        -   [register(name, callback)](#registername-callback)
-        -   [unregister(name)](#unregistername)
-        -   [call(name, args)](#callname-args)
-        -   [callServer(name, args)](#callservername-args)
-        -   [on(name, callback)](#onname-callback)
-        -   [off(name, callback)](#offname-callback)
-        -   [trigger(name, args)](#triggername-args)
-        -   [triggerServer(name, args)](#triggerservername-args)
-
-    -   [Server-side](#server-side-3)
-        -   [callClient(player, name, args)](#callclientplayer-name-args)
-        -   [callBrowsers(player, name, args)](#callbrowsersplayer-name-args)
-        -   [triggerClient(player, name, args)](#triggerclientplayer-name-args)
-        -   [triggerBrowsers(player, name, args)](#triggerbrowsersplayer-name-args)
-    -   [Client-side](#client-side-2)
-        -   [callBrowser(browser, name, args)](#callbrowserbrowser-name-args)
-        -   [triggerBrowser(browser, name, args)](#triggerbrowserbrowser-name-args)
-    -   [CEF or Client-side](#cef-or-client-side)
-        -   [callBrowsers(name, args)](#callbrowsersname-args)
-        -   [callClient(name, args)](#callclientname-args)
-        -   [triggerBrowsers(name, args)](#triggerbrowsersname-args)
-        -   [triggerClient(name, args)](#triggerclientname-args)
-
--   [Options](#options)
--   [Events](#events)
--   [Changelog](#changelog)
+* [Motivation](#motivation)
+* [Installation](#installation)
+* [Examples](#examples)
+    * [Server to Client](#server-to-client)
+    * [CEF to Server](#cef-to-server)
+    * [Client to Server](#client-to-server)
+* [API](#api)
+    * [Universal](#universal)
+        * [setDebugMode(state)](#setdebugmodestate)
+        * [register(name, callback)](#registername-callback)
+        * [unregister(name)](#unregistername)
+        * [call(name, args)](#callname-args-options)
+        * [callServer(name, args)](#callservername-args-options)
+        * [on(name, callback)](#onname-callback)
+        * [off(name, callback)](#offname-callback)
+        * [trigger(name, args)](#triggername-args)
+        * triggerServer(name, args)
+    * [Server-side](#server-side-3)
+        * [callClient(player, name, args)](#callclientplayer-name-args)
+        * [callBrowsers(player, name, args)](#callbrowsersplayer-name-args-options)
+        * triggerClient(player, name, args)
+        * triggerBrowsers(player, name, args)
+    * [Client-side](#client-side-2)
+        * [callBrowser(browser, name, args)](#callbrowserbrowser-name-args-options)
+        * triggerBrowser(browser, name, args)
+    * [CEF or Client-side](#cef-or-client-side)
+        * [callBrowsers(name, args)](#callbrowsersplayer-name-args-options)
+        * [callClient(name, args)](#callclientname-args-options)
+        * [triggerBrowsers(name, args)](#triggerbrowsersname-args)
+        * [triggerClient(name, args)](#triggerclientname-args)
+* [Options](#options)
+* [Events](#events)
+* [Changelog](#changelog)
 
 ## Motivation
 
@@ -537,11 +533,15 @@ You can now use rage-rpc as a full on replacement for mp.events. API functions t
 
 Check the releases tab for an up-to-date changelog.
 
+#### 0.2.1
+
+-   ADD: Logs for `on` & `off` listeners 
+
 #### 0.2.0
 
--   ES6, CommonJS and UMD compatibility
--   add debug mode
--   add generics type-safe to call functions
+-   FIX: ES6, CommonJS and UMD compatibility
+-   ADD: Debug Mode
+-   ADD: generics type-safe to call functions
 
 #### 0.1.0
 
