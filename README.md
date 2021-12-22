@@ -533,6 +533,10 @@ You can now use rage-rpc as a full on replacement for mp.events. API functions t
 
 Check the releases tab for an up-to-date changelog.
 
+#### 0.2.2
+
+-   ADD: Terser to minify generated bundle
+
 #### 0.2.1
 
 -   ADD: Logs for `on` & `off` listeners
