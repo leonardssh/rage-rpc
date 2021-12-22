@@ -693,6 +693,7 @@
 	    if (arguments.length !== 2) {
 	        throw new Error(`on expects 2 arguments: "name" and "cb" ("${name}")`);
 	    }
+	    log(`Registered procedure listener "${name}"`);
 	    const listeners = glob.__rpcEvListeners[name] || new Set();
 	    listeners.add(cb);
 	    glob.__rpcEvListeners[name] = listeners;
@@ -709,6 +710,7 @@
 	    }
 	    const listeners = glob.__rpcEvListeners[name];
 	    if (listeners) {
+	        log(`Unregistered procedure listener "${name}"`);
 	        listeners.delete(cb);
 	    }
 	}
@@ -827,7 +829,7 @@
 	    void _callBrowser(browser, TRIGGER_EVENT, [name, args], { noRet: 1 });
 	}
 	// eslint-disable-next-line @typescript-eslint/no-inferrable-types
-	const version = '0.2.0';
+	const version = '0.2.1';
 
 	exports.call = call;
 	exports.callBrowser = callBrowser;
