@@ -1,0 +1,85 @@
+name: Continuous Delivery
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  pre_ci:
+    name: Prepare CI environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: '[Push] Get commit message'
+        if: github.event_name == 'push'
+        id: push_get_commit_message
+        run: echo ::set-output name=push_commit_message::$(git log --format=%B -n 1 HEAD)
+
+      - name: '[Pull Request] Get commit message'
+        if: github.event_name == 'pull_request'
+        id: pr_get_commit_message
+        run: echo ::set-output name=pr_commit_message::$(git log --format=%B -n 1 HEAD^2)
+
+    outputs:
+      commit_message: $( [ -z "${{ steps.pr_get_commit_message.outputs.pr_commit_message }}" ] && echo "${{ steps.push_get_commit_message.outputs.push_commit_message }}" || echo "${{ steps.pr_get_commit_message.outputs.pr_commit_message }}" )
+
+  Publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    if: "!contains(needs.pre_ci.outputs.commit_message, '[skip ci]')"
+    needs: pre_ci
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 6
+
+      - name: Use Node.js v16 with NPM Registry
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Build
+        run: yarn build --configProduction
+
+      - name: Publish
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          REPO="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          echo -e "\n# Checkout the repo in the target branch"
+          TARGET_BRANCH="build"
+          git clone $REPO out -b $TARGET_BRANCH
+
+          echo -e "\n# Move the generated code to the newly-checked-out repo, to be committed and pushed"
+          rsync -vaI package.json out/
+          rsync -vaI README.md out/
+          rsync -vaI LICENSE out/
+          rsync -vaI dist/index.js out/dist
+          rsync -vaI dist/index.esm.mjs out/dist
+          rsync -vaI dist/rage-rpc.umd.js out/dist
+          rsync -vaI dist/src/index.d.ts out/dist
+
+          echo -e "\n# Commit and push"
+          cd out
+          git add --all .
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git commit -m "publish: output for ${GITHUB_SHA}" || true
+          git push origin $TARGET_BRANCH
+        env:
+          GITHUB_TOKEN: ${{ secrets.COMMIT_TOKEN }}
