@@ -1,6 +1,6 @@
 {
 	"name": "rage-rpc",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "A universal, asynchronous RPC implementation for RAGE Multiplayer",
 	"scripts": {
 		"lint": "eslint src --ext mjs,js,ts,tsx --fix",
