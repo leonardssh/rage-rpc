@@ -537,11 +537,15 @@ You can now use rage-rpc as a full on replacement for mp.events. API functions t
 
 Check the releases tab for an up-to-date changelog.
 
+#### 0.2.1
+
+-   ADD: Logs for `on` & `off` listeners 
+
 #### 0.2.0
 
--   ES6, CommonJS and UMD compatibility
--   add debug mode
--   add generics type-safe to call functions
+-   FIX: ES6, CommonJS and UMD compatibility
+-   ADD: Debug Mode
+-   ADD: generics type-safe to call functions
 
 #### 0.1.0
 
