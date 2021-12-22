@@ -73,7 +73,7 @@ jobs:
           rsync -vaI package.json out/
           rsync -vaI README.md out/
           rsync -vaI LICENSE out/
-          rsync -vaI dist/ out/
+          rsync -vaI dist/ out/dist
 
           echo -e "\n# Commit and push"
           cd out
