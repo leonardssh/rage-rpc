@@ -69,10 +69,10 @@ jobs:
           rsync -vaI package.json out/
           rsync -vaI README.md out/
           rsync -vaI LICENSE out/
-          rsync -vaI dist/index.js out/dist
-          rsync -vaI dist/index.esm.mjs out/dist
-          rsync -vaI dist/rage-rpc.umd.js out/dist
-          rsync -vaI dist/src/index.d.ts out/dist
+          rsync -vaI dist/index.js out/dist/index.js
+          rsync -vaI dist/index.esm.mjs out/dist/index.esm.mjs
+          rsync -vaI dist/rage-rpc.umd.js out/dist/rage-rpc.umd.js
+          rsync -vaI dist/src/index.d.ts out/dist/index.d.ts
 
           echo -e "\n# Commit and push"
           cd out
