@@ -1,29 +1,42 @@
 {
 	"name": "rage-rpc",
-	"version": "0.0.1",
+	"version": "0.2.0",
+	"description": "A universal, asynchronous RPC implementation for RAGE Multiplayer",
 	"scripts": {
 		"lint": "eslint src --ext mjs,js,ts,tsx --fix",
 		"format": "prettier --write src/**/*.{mjs,ts,js}",
 		"prepare": "husky install .github/husky",
 		"build": "rollup -c ./scripts/rollup.config.js",
+		"types": "api-extractor run --local --verbose",
 		"watch": "rollup -w -c ./scripts/rollup.config.js",
 		"update": "pnpm update --latest --interactive",
 		"commit": "git-cz",
 		"cz": "git-cz"
 	},
-	"main": "dist/index.js",
-	"module": "dist/index.esm.mjs",
+	"main": "dist/rage-rpc.js",
+	"module": "dist/rage-rpc.esm.mjs",
 	"types": "dist/index.d.ts",
 	"files": [
 		"dist/*"
 	],
 	"exports": {
-		"require": "./dist/index.js",
-		"import": "./dist/index.esm.mjs"
+		"require": "./dist/rage-rpc.js",
+		"import": "./dist/rage-rpc.esm.mjs"
 	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/leonardssh/rage-rpc.git"
+	},
+	"author": "LeonardSSH",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/leonardssh/rage-rpc/issues"
+	},
+	"homepage": "https://github.com/leonardssh/rage-rpc#readme",
 	"devDependencies": {
 		"@commitlint/cli": "^15.0.0",
 		"@commitlint/config-conventional": "^15.0.0",
+		"@microsoft/api-extractor": "^7.19.2",
 		"@rollup/plugin-node-resolve": "^13.1.1",
 		"@types/node": "^17.0.2",
 		"@typescript-eslint/eslint-plugin": "^5.8.0",
