@@ -2,13 +2,22 @@ import path from 'path';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import typescriptPlugin from 'rollup-plugin-typescript2';
 import versionInjector from 'rollup-plugin-version-injector';
+import { terser } from 'rollup-plugin-terser';
 import minimist from 'minimist';
 
 const args = minimist(process.argv.slice(2));
 const isProduction = args.configProduction;
 import pkg from '../package.json';
-
 const umdOutput = 'dist/rage-rpc.umd.js';
+const productionMode = isProduction
+	? terser({
+			keep_classnames: true,
+			keep_fnames: true,
+			output: {
+				comments: false
+			}
+	  })
+	: [];
 
 const onwarn = (msg, warn) => {
 	if (!/Circular|The 'this' keyword/.test(msg)) {
@@ -58,7 +67,8 @@ function createConfig(output) {
 					fileRegexp: /\.(js|mjs|html|css)$/
 				},
 				injectInComments: false
-			})
+			}),
+			productionMode
 		],
 		inlineDynamicImports: true,
 		onwarn
