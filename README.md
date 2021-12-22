@@ -1,38 +1,38 @@
 > fork of [micaww/rage-rpc](https://github.com/micaww/rage-rpc/)
 
-* [Motivation](#motivation)
-* [Installation](#installation)
-* [Examples](#examples)
-    * [Server to Client](#server-to-client)
-    * [CEF to Server](#cef-to-server)
-    * [Client to Server](#client-to-server)
-* [API](#api)
-    * [Universal](#universal)
-        * [setDebugMode(state)](#setdebugmodestate)
-        * [register(name, callback)](#registername-callback)
-        * [unregister(name)](#unregistername)
-        * [call(name, args)](#callname-args-options)
-        * [callServer(name, args)](#callservername-args-options)
-        * [on(name, callback)](#onname-callback)
-        * [off(name, callback)](#offname-callback)
-        * [trigger(name, args)](#triggername-args)
-        * triggerServer(name, args)
-    * [Server-side](#server-side-3)
-        * [callClient(player, name, args)](#callclientplayer-name-args)
-        * [callBrowsers(player, name, args)](#callbrowsersplayer-name-args-options)
-        * triggerClient(player, name, args)
-        * triggerBrowsers(player, name, args)
-    * [Client-side](#client-side-2)
-        * [callBrowser(browser, name, args)](#callbrowserbrowser-name-args-options)
-        * triggerBrowser(browser, name, args)
-    * [CEF or Client-side](#cef-or-client-side)
-        * [callBrowsers(name, args)](#callbrowsersplayer-name-args-options)
-        * [callClient(name, args)](#callclientname-args-options)
-        * [triggerBrowsers(name, args)](#triggerbrowsersname-args)
-        * [triggerClient(name, args)](#triggerclientname-args)
-* [Options](#options)
-* [Events](#events)
-* [Changelog](#changelog)
+-   [Motivation](#motivation)
+-   [Installation](#installation)
+-   [Examples](#examples)
+    -   [Server to Client](#server-to-client)
+    -   [CEF to Server](#cef-to-server)
+    -   [Client to Server](#client-to-server)
+-   [API](#api)
+    -   [Universal](#universal)
+        -   [setDebugMode(state)](#setdebugmodestate)
+        -   [register(name, callback)](#registername-callback)
+        -   [unregister(name)](#unregistername)
+        -   [call(name, args)](#callname-args-options)
+        -   [callServer(name, args)](#callservername-args-options)
+        -   [on(name, callback)](#onname-callback)
+        -   [off(name, callback)](#offname-callback)
+        -   [trigger(name, args)](#triggername-args)
+        -   triggerServer(name, args)
+    -   [Server-side](#server-side-3)
+        -   [callClient(player, name, args)](#callclientplayer-name-args)
+        -   [callBrowsers(player, name, args)](#callbrowsersplayer-name-args-options)
+        -   triggerClient(player, name, args)
+        -   triggerBrowsers(player, name, args)
+    -   [Client-side](#client-side-2)
+        -   [callBrowser(browser, name, args)](#callbrowserbrowser-name-args-options)
+        -   triggerBrowser(browser, name, args)
+    -   [CEF or Client-side](#cef-or-client-side)
+        -   [callBrowsers(name, args)](#callbrowsersplayer-name-args-options)
+        -   [callClient(name, args)](#callclientname-args-options)
+        -   [triggerBrowsers(name, args)](#triggerbrowsersname-args)
+        -   [triggerClient(name, args)](#triggerclientname-args)
+-   [Options](#options)
+-   [Events](#events)
+-   [Changelog](#changelog)
 
 ## Motivation
 
@@ -54,13 +54,13 @@ You can install via [github](https://github.com/LeonardSSH/rage-rpc)
 
 ```bash
 # With npm
-npm i github:leonardssh/rage-rpc#v0.2.1
+npm i github:leonardssh/rage-rpc#v0.2.2
 
 # With yarn
-yarn add github:leonardssh/rage-rpc#v0.2.1
+yarn add github:leonardssh/rage-rpc#v0.2.2
 
 # With pnpm
-pnpm add github:leonardssh/rage-rpc#v0.2.1
+pnpm add github:leonardssh/rage-rpc#v0.2.2
 ```
 
 From here, you can simply require the package in any RAGE context:
@@ -535,7 +535,7 @@ Check the releases tab for an up-to-date changelog.
 
 #### 0.2.1
 
--   ADD: Logs for `on` & `off` listeners 
+-   ADD: Logs for `on` & `off` listeners
 
 #### 0.2.0
 
