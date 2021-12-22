@@ -659,6 +659,8 @@ export function on(name: string, cb: ProcedureListener) {
 		throw new Error(`on expects 2 arguments: "name" and "cb" ("${name}")`);
 	}
 
+	log(`Registered procedure listener "${name}"`);
+
 	const listeners = glob.__rpcEvListeners[name] || new Set();
 	listeners.add(cb);
 
@@ -680,6 +682,7 @@ export function off(name: string, cb: ProcedureListener) {
 	const listeners = glob.__rpcEvListeners[name];
 
 	if (listeners) {
+		log(`Unregistered procedure listener "${name}"`);
 		listeners.delete(cb);
 	}
 }
