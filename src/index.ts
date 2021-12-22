@@ -6,4 +6,5 @@ export function call(args: any) {
 	console.log(...args);
 }
 
-export const version = '[VI]{version}[/VI]';
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const version: string = '[VI]{version}[/VI]';
