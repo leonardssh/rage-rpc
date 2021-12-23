@@ -828,6 +828,6 @@ function triggerBrowser(browser, name, args) {
     void _callBrowser(browser, TRIGGER_EVENT, [name, args], { noRet: 1 });
 }
 // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-const version = '0.2.2';
+const version = '0.2.3';
 
 export { call, callBrowser, callBrowsers, callClient, callServer, off, on, register, setDebugMode, trigger, triggerBrowser, triggerBrowsers, triggerClient, triggerServer, unregister, version };
