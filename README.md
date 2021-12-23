@@ -54,13 +54,13 @@ You can install via [github](https://github.com/LeonardSSH/rage-rpc)
 
 ```bash
 # With npm
-npm i github:leonardssh/rage-rpc#v0.2.2
+npm i github:leonardssh/rage-rpc#v0.2.3
 
 # With yarn
-yarn add github:leonardssh/rage-rpc#v0.2.2
+yarn add github:leonardssh/rage-rpc#v0.2.3
 
 # With pnpm
-pnpm add github:leonardssh/rage-rpc#v0.2.2
+pnpm add github:leonardssh/rage-rpc#v0.2.3
 ```
 
 From here, you can simply require the package in any RAGE context:
@@ -533,6 +533,10 @@ You can now use rage-rpc as a full on replacement for mp.events. API functions t
 
 Check the releases tab for an up-to-date changelog.
 
+#### 0.2.3
+
+-   FIX: Player null type assignment
+
 #### 0.2.2
 
 -   ADD: Terser to minify generated bundle
@@ -545,7 +549,7 @@ Check the releases tab for an up-to-date changelog.
 
 -   FIX: ES6, CommonJS and UMD compatibility
 -   ADD: Debug Mode
--   ADD: generics type-safe to call functions
+-   ADD: Generics type-safe to call functions
 
 #### 0.1.0
 
