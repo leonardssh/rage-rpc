@@ -47,7 +47,7 @@ export declare function callBrowsers<T = any>(player: PlayerMp | string, name?: 
  * @param options - Any options.
  * @returns The result from the procedure.
  */
-export declare function callClient<T = any>(player: PlayerMp | string | null, name?: string | any, args?: any, options?: CallOptions): Promise<T>;
+export declare function callClient<T = any>(player: PlayerMp | string, name?: string | any, args?: any, options?: CallOptions): Promise<T>;
 
 export declare interface CallOptions {
     timeout?: number;
@@ -130,7 +130,7 @@ export declare function triggerBrowser(browser: BrowserMp, name: string, args?: 
  * @param name - The name of the event.
  * @param args - Any parameters for the event.
  */
-export declare function triggerBrowsers(player: PlayerMp | string | null, name?: string | any, args?: any): void;
+export declare function triggerBrowsers(player: PlayerMp | string, name?: string | any, args?: any): void;
 
 /**
  * Triggers an event registered on the client.
@@ -141,7 +141,7 @@ export declare function triggerBrowsers(player: PlayerMp | string | null, name?:
  * @param name - The name of the event.
  * @param args - Any parameters for the event.
  */
-export declare function triggerClient(player: PlayerMp | string | null, name?: string | any, args?: any): void;
+export declare function triggerClient(player: PlayerMp | string, name?: string | any, args?: any): void;
 
 /**
  * Triggers an event registered on the server.

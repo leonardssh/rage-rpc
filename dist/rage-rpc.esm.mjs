@@ -1,1 +1,833 @@
-var e;!function(e){e.Blip="b",e.Checkpoint="cp",e.Colshape="c",e.Label="l",e.Marker="m",e.Object="o",e.Pickup="p",e.Player="pl",e.Vehicle="v"}(e||(e={}));let r=!1;function setDebugMode(e){r=e}function getEnvironment(){if(mp.joaat)return"server";if(mp.game&&mp.game.joaat)return"client";if(mp.trigger)return"cef";throw new Error("Unknown RAGE environment")}function log(e,t="info"){if(!r)return;const n=getEnvironment(),s=mp.console;(s?mp.console:console)[s?{info:"logInfo",error:"logError",warn:"logWarn"}[t]:"info"===t?"log":t](`RPC (${n}): ${e}`)}function isObjectMpType(r,t){const n="client"===getEnvironment();if(r&&"object"==typeof r&&void 0!==r.id){const validate=(e,t,s)=>n?r.type===e&&t.at(r.id)===r:r instanceof s;switch(t){case e.Blip:return validate("blip",mp.blips,mp.Blip);case e.Checkpoint:return validate("checkpoint",mp.checkpoints,mp.Checkpoint);case e.Colshape:return validate("colshape",mp.colshapes,mp.Colshape);case e.Label:return validate("textlabel",mp.labels,mp.TextLabel);case e.Marker:return validate("marker",mp.markers,mp.Marker);case e.Object:return validate("object",mp.objects,mp.Object);case e.Pickup:return validate("pickup",mp.pickups,mp.Pickup);case e.Player:return validate("player",mp.players,mp.Player);case e.Vehicle:return validate("vehicle",mp.vehicles,mp.Vehicle)}}return!1}function generateId(){const e=46656*Math.random()|0,r=46656*Math.random()|0;return`000${e.toString(36)}`.slice(-3)+`000${r.toString(36)}`.slice(-3)}function stringifyData(r){const t=getEnvironment();return JSON.stringify(r,((r,n)=>{if("client"===t||"server"===t&&n&&"object"==typeof n){let r;if(isObjectMpType(n,e.Blip)?r=e.Blip:isObjectMpType(n,e.Checkpoint)?r=e.Checkpoint:isObjectMpType(n,e.Colshape)?r=e.Colshape:isObjectMpType(n,e.Marker)?r=e.Marker:isObjectMpType(n,e.Object)?r=e.Object:isObjectMpType(n,e.Pickup)?r=e.Pickup:isObjectMpType(n,e.Player)?r=e.Player:isObjectMpType(n,e.Vehicle)&&(r=e.Vehicle),r)return{__t:r,i:"number"==typeof n.remoteId?n.remoteId:n.id}}return n}))}function promiseTimeout(e,r){return"number"==typeof r?Promise.race([new Promise(((e,t)=>{setTimeout((()=>t("TIMEOUT")),r)})),e]):e}function isBrowserValid(e){try{e.url}catch(e){return!1}return!0}const t="__rpc:triggerEvent",n=getEnvironment(),s="cef"===n?window:global;if(s["__rpc:processPartial"]||(s.__rpcPartialData={},s["__rpc:processPartial"]=(e,r,t,o,c)=>{"server"!==n&&(c=o,o=t,t=r,r=e),s.__rpcPartialData[r]||(s.__rpcPartialData[r]=new Array(o)),s.__rpcPartialData[r][t]=c,s.__rpcPartialData[r].includes(void 0)||("server"===n?s["__rpc:process"](e,s.__rpcPartialData[r].join("")):s["__rpc:process"](s.__rpcPartialData[r].join("")),delete s.__rpcPartialData[r])}),!s["__rpc:process"]){if(s.__rpcListeners={},s.__rpcPending={},s.__rpcEvListeners={},s["__rpc:process"]=(r,t)=>{"server"!==n&&(t=r);const o=function parseData(r){const t=getEnvironment();return JSON.parse(r,((r,n)=>{if(("client"===t||"server"===t)&&n&&"object"==typeof n&&"string"==typeof n.__t&&"number"==typeof n.i&&2===Object.keys(n).length){const r=n.i;let s;switch(n.__t){case e.Blip:s=mp.blips;break;case e.Checkpoint:s=mp.checkpoints;break;case e.Colshape:s=mp.colshapes;break;case e.Label:s=mp.labels;break;case e.Marker:s=mp.markers;break;case e.Object:s=mp.objects;break;case e.Pickup:s=mp.pickups;break;case e.Player:s=mp.players;break;case e.Vehicle:s=mp.vehicles}if(s)return s["client"===t?"atRemoteId":"at"](r)}return n}))}(t);if(o.req){const e={id:o.id,environment:o.fenv||o.env};"server"===n&&(e.player=r);const t={ret:1,id:o.id,env:n};let c;switch(n){case"server":c=r=>e.player.call("__rpc:process",[stringifyData(r)]);break;case"client":if("server"===o.env)c=e=>mp.events.callRemote("__rpc:process",stringifyData(e));else if("cef"===o.env){const r=o.b&&s.__rpcBrowsers[o.b];e.browser=r,c=e=>r&&isBrowserValid(r)&&passEventToBrowser(r,e,!0)}break;default:c=e=>mp.trigger("__rpc:process",stringifyData(e))}if(c){const r=callProcedure(o.name,o.args,e);o.noRet||r.then((e=>c({...t,res:e}))).catch((e=>c({...t,err:e||null})))}}else if(o.ret){const e=s.__rpcPending[o.id];if("server"===n&&e.player!==r)return;e&&(e.resolve(o.hasOwnProperty("err")?Promise.reject(o.err):Promise.resolve(o.res)),delete s.__rpcPending[o.id])}},"cef"===n)void 0===s["__rpc:id"]&&(s["__rpc:id"]=new Promise((e=>{window.name?e(window.name):s["__rpc:id:resolve"]=e})));else if(mp.events.add("__rpc:process",s["__rpc:process"]),mp.events.add("__rpc:processPartial",s["__rpc:processPartial"]),"client"===n){register("__rpc:callServer",(([e,r,t],n)=>_callServer(e,r,{fenv:n.environment,noRet:t}))),register("__rpc:callBrowsers",(([e,r,t],n)=>_callBrowsers(null,e,r,{fenv:n.environment,noRet:t}))),s.__rpcBrowsers={};const initBrowser=e=>{const r=generateId();Object.keys(s.__rpcBrowsers).forEach((r=>{const t=s.__rpcBrowsers[r];t&&isBrowserValid(t)&&t!==e||delete s.__rpcBrowsers[r]})),s.__rpcBrowsers[r]=e,e.execute(`\n                    window.name = '${r}';\n                    if(typeof window['__rpc:id'] === 'undefined'){\n                        window['__rpc:id'] = Promise.resolve(window.name);\n                    }else{\n                        window['__rpc:id:resolve'](window.name);\n                    }\n                `)};mp.browsers.forEach(initBrowser),mp.events.add("browserCreated",initBrowser),s.__rpcBrowserProcedures={},mp.events.add("__rpc:browserRegister",(e=>{const[r,t]=JSON.parse(e);s.__rpcBrowserProcedures[t]=r})),mp.events.add("__rpc:browserUnregister",(e=>{const[r,t]=JSON.parse(e);s.__rpcBrowserProcedures[t]===r&&delete s.__rpcBrowserProcedures[t]})),register("__rpc:triggerEventBrowsers",(([e,r],n)=>{Object.keys(s.__rpcBrowsers).forEach((o=>{const c=s.__rpcBrowsers[o];c&&isBrowserValid(c)?_callBrowser(c,t,[e,r],{fenv:n.environment,noRet:1}):delete s.__rpcBrowsers[o]}))}))}register(t,(([e,r],t)=>callEvent(e,r,t)))}function passEventToBrowser(e,r,t){const n=stringifyData(r);e.execute(`var process = window["__rpc:process"]; if(process){ process(${JSON.stringify(n)}); }else{ ${t?"":`mp.trigger("__rpc:process", '{"ret":1,"id":"${r.id}","err":"PROCEDURE_NOT_FOUND","env":"cef"}');`} }`)}function callProcedure(e,r,t){const n=s.__rpcListeners[e];return n?Promise.resolve(n(r,t)):Promise.reject(`PROCEDURE_NOT_FOUND (${e})`)}function sendEventData(e,r){const t={client:(e,...r)=>mp.events.callRemote(e,...r),server:(e,...t)=>r.call(e,[...t])},n=e.env,s=stringifyData(e);if(s.length>32e3){const r=function chunkSubstr(e,r){const t=Math.ceil(e.length/r),n=new Array(t);let s=0;for(let o=0;o<t;o+=1)n[o]=e.substring(s,r),s+=r;return n}(s,32e3);r.forEach(((s,o)=>{t[n]("__rpc:processPartial",e.id,o,r.length,s)}))}else t[n]("__rpc:process",s)}function register(e,r){if(2!==arguments.length)throw new Error(`register expects 2 arguments: "name" and "cb" ("${e}")`);return log(`Registered procedure "${e}"`),"cef"===n&&s["__rpc:id"].then((r=>mp.trigger("__rpc:browserRegister",JSON.stringify([r,e])))),s.__rpcListeners[e]=r,()=>unregister(e)}function unregister(e){if(1!==arguments.length)throw new Error(`unregister expects 1 argument: "name" ("${e}")`);log(`Unregistered procedure "${e}"`),"cef"===n&&s["__rpc:id"].then((r=>mp.trigger("__rpc:browserUnregister",JSON.stringify([r,e])))),s.__rpcListeners[e]=void 0}function call(e,r,t={}){return arguments.length<1||arguments.length>3?Promise.reject(`call expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${e}")`):promiseTimeout(callProcedure(e,r,{environment:n}),t.timeout)}function _callServer(e,r,t={}){switch(n){case"server":return call(e,r);case"client":{const o=generateId();return new Promise((c=>{t.noRet||(s.__rpcPending[o]={resolve:c});sendEventData({req:1,id:o,name:e,env:n,args:r,...t})}))}case"cef":return callClient("__rpc:callServer",[e,r,Number(t.noRet)])}}function callServer(e,r,t={}){if(arguments.length<1||arguments.length>3)return Promise.reject(`callServer expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${e}")`);const n={};return t.noRet&&(n.noRet=1),promiseTimeout(_callServer(e,r,n),t.timeout)}function _callClient(e,r,t,o={}){switch(n){case"client":return call(r,t);case"server":{const c=generateId();return new Promise((i=>{o.noRet||(s.__rpcPending[c]={resolve:i,player:e});sendEventData({req:1,id:c,name:r,env:n,args:t,...o},e)}))}case"cef":{const e=generateId();return s["__rpc:id"].then((c=>new Promise((i=>{o.noRet||(s.__rpcPending[e]={resolve:i});const a={b:c,req:1,id:e,name:r,env:n,args:t,...o};mp.trigger("__rpc:process",stringifyData(a))}))))}}}function callClient(e,r,t,s={}){switch(n){case"client":if(s=t||{},t=r,r=e,e=null,arguments.length<1||arguments.length>3||"string"!=typeof r)return Promise.reject(`callClient from the client expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${r}")`);break;case"server":if(arguments.length<2||arguments.length>4||"object"!=typeof e)return Promise.reject(`callClient from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" ("${r}")`);break;case"cef":if(s=t||{},t=r,r=e,e=null,arguments.length<1||arguments.length>3||"string"!=typeof r)return Promise.reject(`callClient from the browser expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${r}")`)}const o={};return s.noRet&&(o.noRet=1),promiseTimeout(_callClient(e,r,t,o),s.timeout)}function _callBrowser(e,r,t,o={}){return new Promise((c=>{const i=generateId();o.noRet||(s.__rpcPending[i]={resolve:c}),passEventToBrowser(e,{req:1,id:i,name:r,env:n,args:t,...o},!1)}))}function _callBrowsers(e,r,t,o={}){switch(n){case"client":{const e=s.__rpcBrowserProcedures[r];if(!e)return Promise.reject(`PROCEDURE_NOT_FOUND (${r})`);const n=s.__rpcBrowsers[e];return n&&isBrowserValid(n)?_callBrowser(n,r,t,o):Promise.reject(`PROCEDURE_NOT_FOUND (${r})`)}case"server":return _callClient(e,"__rpc:callBrowsers",[r,t,Number(o.noRet)],o);case"cef":return _callClient(null,"__rpc:callBrowsers",[r,t,Number(o.noRet)],o)}}function callBrowsers(e,r,t,s={}){let o;const c={};switch(n){case"client":case"cef":if(s=t||{},t=r,r=e,arguments.length<1||arguments.length>3)return Promise.reject(`callBrowsers from the client or browser expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${r}")`);s.noRet&&(c.noRet=1),o=_callBrowsers(null,r,t,c);break;case"server":if(arguments.length<2||arguments.length>4)return Promise.reject(`callBrowsers from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" ("${r}")`);s.noRet&&(c.noRet=1),o=_callBrowsers(e,r,t,c)}if(o)return promiseTimeout(o,s.timeout)}function callBrowser(e,r,t,s={}){if("client"!==n)return Promise.reject(`callBrowser can only be used in the client environment ("${r}")`);if(arguments.length<2||arguments.length>4)return Promise.reject(`callBrowser expects 2 to 4 arguments: "browser", "name", optional "args", and optional "options" ("${r}")`);const o={};return s.noRet&&(o.noRet=1),promiseTimeout(_callBrowser(e,r,t,o),s.timeout)}function callEvent(e,r,t){const n=s.__rpcEvListeners[e];n&&n.forEach((e=>e(r,t)))}function on(e,r){if(2!==arguments.length)throw new Error(`on expects 2 arguments: "name" and "cb" ("${e}")`);log(`Registered procedure listener "${e}"`);const t=s.__rpcEvListeners[e]||new Set;return t.add(r),s.__rpcEvListeners[e]=t,()=>off(e,r)}function off(e,r){if(2!==arguments.length)throw new Error(`off expects 2 arguments: "name" and "cb" ("${e}")`);const t=s.__rpcEvListeners[e];t&&(log(`Unregistered procedure listener "${e}"`),t.delete(r))}function trigger(e,r){if(arguments.length<1||arguments.length>2)throw new Error(`trigger expects 1 or 2 arguments: "name", and optional "args" ("${e}")`);callEvent(e,r,{environment:n})}function triggerClient(e,r,s){switch(n){case"client":if(s=r,r=e,e=null,arguments.length<1||arguments.length>2||"string"!=typeof r)throw new Error(`triggerClient from the client expects 1 or 2 arguments: "name", and optional "args" ("${r}")`);break;case"server":if(arguments.length<2||arguments.length>3||"object"!=typeof e)throw new Error(`triggerClient from the server expects 2 or 3 arguments: "player", "name", and optional "args" ("${r}")`);break;case"cef":if(s=r,r=e,e=null,arguments.length<1||arguments.length>2||"string"!=typeof r)throw new Error(`triggerClient from the browser expects 1 or 2 arguments: "name", and optional "args" ("${r}")`)}_callClient(e,t,[r,s],{noRet:1})}function triggerServer(e,r){if(arguments.length<1||arguments.length>2)throw new Error(`triggerServer expects 1 or 2 arguments: "name", and optional "args" ("${e}")`);_callServer(t,[e,r],{noRet:1})}function triggerBrowsers(e,r,t){switch(n){case"client":case"cef":if(t=r,r=e,e=null,arguments.length<1||arguments.length>2)throw new Error(`triggerBrowsers from the client or browser expects 1 or 2 arguments: "name", and optional "args" ("${r}")`);break;case"server":if(arguments.length<2||arguments.length>3)throw new Error(`triggerBrowsers from the server expects 2 or 3 arguments: "player", "name", and optional "args" ("${r}")`)}_callClient(e,"__rpc:triggerEventBrowsers",[r,t],{noRet:1})}function triggerBrowser(e,r,s){if("client"!==n)throw new Error(`callBrowser can only be used in the client environment ("${r}")`);if(arguments.length<2||arguments.length>4)throw new Error(`callBrowser expects 2 or 3 arguments: "browser", "name", and optional "args" ("${r}")`);_callBrowser(e,t,[r,s],{noRet:1})}const o="0.2.2";export{call,callBrowser,callBrowsers,callClient,callServer,off,on,register,setDebugMode,trigger,triggerBrowser,triggerBrowsers,triggerClient,triggerServer,unregister,o as version};
+var MpTypes;
+(function (MpTypes) {
+    MpTypes["Blip"] = "b";
+    MpTypes["Checkpoint"] = "cp";
+    MpTypes["Colshape"] = "c";
+    MpTypes["Label"] = "l";
+    MpTypes["Marker"] = "m";
+    MpTypes["Object"] = "o";
+    MpTypes["Pickup"] = "p";
+    MpTypes["Player"] = "pl";
+    MpTypes["Vehicle"] = "v";
+})(MpTypes || (MpTypes = {}));
+let DEBUG_MODE = false;
+function setDebugMode(state) {
+    DEBUG_MODE = state;
+}
+function getEnvironment() {
+    if (mp.joaat) {
+        return 'server';
+    }
+    if (mp.game && mp.game.joaat) {
+        return 'client';
+    }
+    if (mp.trigger) {
+        return 'cef';
+    }
+    throw new Error('Unknown RAGE environment');
+}
+function log(data, type = 'info') {
+    if (!DEBUG_MODE) {
+        return;
+    }
+    const env = getEnvironment();
+    const isClient = mp.console;
+    const clientFormatLog = {
+        info: 'logInfo',
+        error: 'logError',
+        warn: 'logWarn'
+    };
+    (isClient ? mp.console : console)[isClient ? clientFormatLog[type] : type === 'info' ? 'log' : type](`RPC (${env}): ${data}`);
+}
+function isObjectMpType(obj, type) {
+    const client = getEnvironment() === 'client';
+    if (obj && typeof obj === 'object' && typeof obj.id !== 'undefined') {
+        const validate = (type, collection, mpType) => client ? obj.type === type && collection.at(obj.id) === obj : obj instanceof mpType;
+        switch (type) {
+            case MpTypes.Blip:
+                return validate('blip', mp.blips, mp.Blip);
+            case MpTypes.Checkpoint:
+                return validate('checkpoint', mp.checkpoints, mp.Checkpoint);
+            case MpTypes.Colshape:
+                return validate('colshape', mp.colshapes, mp.Colshape);
+            case MpTypes.Label:
+                return validate('textlabel', mp.labels, mp.TextLabel);
+            case MpTypes.Marker:
+                return validate('marker', mp.markers, mp.Marker);
+            case MpTypes.Object:
+                return validate('object', mp.objects, mp.Object);
+            case MpTypes.Pickup:
+                return validate('pickup', mp.pickups, mp.Pickup);
+            case MpTypes.Player:
+                return validate('player', mp.players, mp.Player);
+            case MpTypes.Vehicle:
+                return validate('vehicle', mp.vehicles, mp.Vehicle);
+        }
+    }
+    return false;
+}
+function generateId() {
+    const first = (Math.random() * 46656) | 0;
+    const second = (Math.random() * 46656) | 0;
+    const firstPart = `000${first.toString(36)}`.slice(-3);
+    const secondPart = `000${second.toString(36)}`.slice(-3);
+    return firstPart + secondPart;
+}
+function stringifyData(data) {
+    const env = getEnvironment();
+    return JSON.stringify(data, (_, value) => {
+        if (env === 'client' || (env === 'server' && value && typeof value === 'object')) {
+            let type;
+            if (isObjectMpType(value, MpTypes.Blip))
+                type = MpTypes.Blip;
+            else if (isObjectMpType(value, MpTypes.Checkpoint))
+                type = MpTypes.Checkpoint;
+            else if (isObjectMpType(value, MpTypes.Colshape))
+                type = MpTypes.Colshape;
+            else if (isObjectMpType(value, MpTypes.Marker))
+                type = MpTypes.Marker;
+            else if (isObjectMpType(value, MpTypes.Object))
+                type = MpTypes.Object;
+            else if (isObjectMpType(value, MpTypes.Pickup))
+                type = MpTypes.Pickup;
+            else if (isObjectMpType(value, MpTypes.Player))
+                type = MpTypes.Player;
+            else if (isObjectMpType(value, MpTypes.Vehicle))
+                type = MpTypes.Vehicle;
+            if (type)
+                return {
+                    __t: type,
+                    i: typeof value.remoteId === 'number' ? value.remoteId : value.id
+                };
+        }
+        return value;
+    });
+}
+function parseData(data) {
+    const env = getEnvironment();
+    return JSON.parse(data, (_, value) => {
+        if ((env === 'client' || env === 'server') &&
+            value &&
+            typeof value === 'object' &&
+            typeof value.__t === 'string' &&
+            typeof value.i === 'number' &&
+            Object.keys(value).length === 2) {
+            const id = value.i;
+            const type = value.__t;
+            let collection;
+            switch (type) {
+                case MpTypes.Blip:
+                    collection = mp.blips;
+                    break;
+                case MpTypes.Checkpoint:
+                    collection = mp.checkpoints;
+                    break;
+                case MpTypes.Colshape:
+                    collection = mp.colshapes;
+                    break;
+                case MpTypes.Label:
+                    collection = mp.labels;
+                    break;
+                case MpTypes.Marker:
+                    collection = mp.markers;
+                    break;
+                case MpTypes.Object:
+                    collection = mp.objects;
+                    break;
+                case MpTypes.Pickup:
+                    collection = mp.pickups;
+                    break;
+                case MpTypes.Player:
+                    collection = mp.players;
+                    break;
+                case MpTypes.Vehicle:
+                    collection = mp.vehicles;
+                    break;
+            }
+            if (collection) {
+                return collection[env === 'client' ? 'atRemoteId' : 'at'](id);
+            }
+        }
+        return value;
+    });
+}
+function promiseTimeout(promise, timeout) {
+    if (typeof timeout === 'number') {
+        return Promise.race([
+            new Promise((_, reject) => {
+                setTimeout(() => reject('TIMEOUT'), timeout);
+            }),
+            promise
+        ]);
+    }
+    return promise;
+}
+function isBrowserValid(browser) {
+    try {
+        browser.url;
+    }
+    catch (e) {
+        return false;
+    }
+    return true;
+}
+function chunkSubstr(str, size) {
+    const numChunks = Math.ceil(str.length / size);
+    const chunks = new Array(numChunks);
+    let index = 0;
+    for (let i = 0; i < numChunks; i += 1) {
+        chunks[i] = str.substring(index, size);
+        index += size;
+    }
+    return chunks;
+}
+
+const ERR_NOT_FOUND = 'PROCEDURE_NOT_FOUND';
+const MAX_DATA_SIZE = 32000;
+const IDENTIFIER = '__rpc:id';
+const PROCESS_EVENT = '__rpc:process';
+const PROCESS_EVENT_PARTIAL = '__rpc:processPartial';
+const BROWSER_REGISTER = '__rpc:browserRegister';
+const BROWSER_UNREGISTER = '__rpc:browserUnregister';
+const TRIGGER_EVENT = '__rpc:triggerEvent';
+const TRIGGER_EVENT_BROWSERS = '__rpc:triggerEventBrowsers';
+const environment = getEnvironment();
+const glob = environment === 'cef' ? window : global;
+if (!glob[PROCESS_EVENT_PARTIAL]) {
+    glob.__rpcPartialData = {};
+    glob[PROCESS_EVENT_PARTIAL] = (player, id, index, size, rawData) => {
+        if (environment !== 'server') {
+            rawData = size;
+            size = index;
+            index = id;
+            id = player;
+        }
+        if (!glob.__rpcPartialData[id]) {
+            glob.__rpcPartialData[id] = new Array(size);
+        }
+        glob.__rpcPartialData[id][index] = rawData;
+        if (!glob.__rpcPartialData[id].includes(undefined)) {
+            if (environment === 'server') {
+                glob[PROCESS_EVENT](player, glob.__rpcPartialData[id].join(''));
+            }
+            else {
+                glob[PROCESS_EVENT](glob.__rpcPartialData[id].join(''));
+            }
+            delete glob.__rpcPartialData[id];
+        }
+    };
+}
+if (!glob[PROCESS_EVENT]) {
+    glob.__rpcListeners = {};
+    glob.__rpcPending = {};
+    glob.__rpcEvListeners = {};
+    glob[PROCESS_EVENT] = (player, rawData) => {
+        if (environment !== 'server') {
+            rawData = player;
+        }
+        const data = parseData(rawData);
+        if (data.req) {
+            // someone is trying to remotely call a procedure
+            const info = {
+                id: data.id,
+                environment: data.fenv || data.env
+            };
+            if (environment === 'server') {
+                info.player = player;
+            }
+            const part = {
+                ret: 1,
+                id: data.id,
+                env: environment
+            };
+            let ret;
+            switch (environment) {
+                case 'server': {
+                    ret = (ev) => info.player.call(PROCESS_EVENT, [stringifyData(ev)]);
+                    break;
+                }
+                case 'client': {
+                    if (data.env === 'server') {
+                        ret = (ev) => mp.events.callRemote(PROCESS_EVENT, stringifyData(ev));
+                    }
+                    else if (data.env === 'cef') {
+                        const browser = data.b && glob.__rpcBrowsers[data.b];
+                        info.browser = browser;
+                        ret = (ev) => browser && isBrowserValid(browser) && passEventToBrowser(browser, ev, true);
+                    }
+                    break;
+                }
+                // CEF
+                default: {
+                    ret = (ev) => mp.trigger(PROCESS_EVENT, stringifyData(ev));
+                }
+            }
+            // @ts-ignore meh
+            if (ret) {
+                const promise = callProcedure(data.name, data.args, info);
+                if (!data.noRet) {
+                    promise.then((res) => ret({ ...part, res })).catch((err) => ret({ ...part, err: err ? err : null }));
+                }
+            }
+        }
+        else if (data.ret) {
+            // a previously called remote procedure has returned
+            const info = glob.__rpcPending[data.id];
+            if (environment === 'server' && info.player !== player) {
+                return;
+            }
+            if (info) {
+                info.resolve(data.hasOwnProperty('err') ? Promise.reject(data.err) : Promise.resolve(data.res));
+                delete glob.__rpcPending[data.id];
+            }
+        }
+    };
+    if (environment === 'cef') {
+        if (typeof glob[IDENTIFIER] === 'undefined') {
+            glob[IDENTIFIER] = new Promise((resolve) => {
+                if (window.name) {
+                    resolve(window.name);
+                }
+                else {
+                    glob[`${IDENTIFIER}:resolve`] = resolve;
+                }
+            });
+        }
+    }
+    else {
+        mp.events.add(PROCESS_EVENT, glob[PROCESS_EVENT]);
+        mp.events.add(PROCESS_EVENT_PARTIAL, glob[PROCESS_EVENT_PARTIAL]);
+        if (environment === 'client') {
+            // set up internal pass-through events
+            register('__rpc:callServer', ([name, args, noRet], info) => _callServer(name, args, { fenv: info.environment, noRet }));
+            register('__rpc:callBrowsers', ([name, args, noRet], info) => _callBrowsers(null, name, args, { fenv: info.environment, noRet }));
+            // set up browser identifiers
+            glob.__rpcBrowsers = {};
+            const initBrowser = (browser) => {
+                const id = generateId();
+                Object.keys(glob.__rpcBrowsers).forEach((key) => {
+                    const b = glob.__rpcBrowsers[key];
+                    if (!b || !isBrowserValid(b) || b === browser) {
+                        delete glob.__rpcBrowsers[key];
+                    }
+                });
+                glob.__rpcBrowsers[id] = browser;
+                browser.execute(`
+                    window.name = '${id}';
+                    if(typeof window['${IDENTIFIER}'] === 'undefined'){
+                        window['${IDENTIFIER}'] = Promise.resolve(window.name);
+                    }else{
+                        window['${IDENTIFIER}:resolve'](window.name);
+                    }
+                `);
+            };
+            mp.browsers.forEach(initBrowser);
+            mp.events.add('browserCreated', initBrowser);
+            // set up browser registration map
+            glob.__rpcBrowserProcedures = {};
+            mp.events.add(BROWSER_REGISTER, (data) => {
+                const [browserId, name] = JSON.parse(data);
+                glob.__rpcBrowserProcedures[name] = browserId;
+            });
+            mp.events.add(BROWSER_UNREGISTER, (data) => {
+                const [browserId, name] = JSON.parse(data);
+                if (glob.__rpcBrowserProcedures[name] === browserId) {
+                    delete glob.__rpcBrowserProcedures[name];
+                }
+            });
+            register(TRIGGER_EVENT_BROWSERS, ([name, args], info) => {
+                Object.keys(glob.__rpcBrowsers).forEach((key) => {
+                    const browser = glob.__rpcBrowsers[key];
+                    if (!browser || !isBrowserValid(browser)) {
+                        // Clean up expired browsers
+                        delete glob.__rpcBrowsers[key];
+                    }
+                    else {
+                        void _callBrowser(browser, TRIGGER_EVENT, [name, args], { fenv: info.environment, noRet: 1 });
+                    }
+                });
+            });
+        }
+    }
+    register(TRIGGER_EVENT, ([name, args], info) => callEvent(name, args, info));
+}
+function passEventToBrowser(browser, data, ignoreNotFound) {
+    const raw = stringifyData(data);
+    browser.execute(`var process = window["${PROCESS_EVENT}"]; if(process){ process(${JSON.stringify(raw)}); }else{ ${ignoreNotFound ? '' : `mp.trigger("${PROCESS_EVENT}", '{"ret":1,"id":"${data.id}","err":"${ERR_NOT_FOUND}","env":"cef"}');`} }`);
+}
+function callProcedure(name, args, info) {
+    const listener = glob.__rpcListeners[name];
+    if (!listener) {
+        return Promise.reject(`${ERR_NOT_FOUND} (${name})`);
+    }
+    return Promise.resolve(listener(args, info));
+}
+function sendEventData(event, player) {
+    const callEnvFunc = {
+        client: (event, ...args) => mp.events.callRemote(event, ...args),
+        server: (event, ...args) => player.call(event, [...args])
+    };
+    const env = event.env;
+    const sendString = stringifyData(event);
+    if (sendString.length > MAX_DATA_SIZE) {
+        const parts = chunkSubstr(sendString, MAX_DATA_SIZE);
+        parts.forEach((partString, index) => {
+            callEnvFunc[env](PROCESS_EVENT_PARTIAL, event.id, index, parts.length, partString);
+        });
+    }
+    else {
+        callEnvFunc[env](PROCESS_EVENT, sendString);
+    }
+}
+/**
+ * Register a procedure.
+ * @param {string} name - The name of the procedure.
+ * @param {ProcedureListener} cb - The procedure's callback. The return value will be sent back to the caller.
+ * @returns The function, which unregister the event.
+ */
+function register(name, cb) {
+    if (arguments.length !== 2) {
+        throw new Error(`register expects 2 arguments: "name" and "cb" ("${name}")`);
+    }
+    log(`Registered procedure "${name}"`);
+    if (environment === 'cef') {
+        glob[IDENTIFIER].then((id) => mp.trigger(BROWSER_REGISTER, JSON.stringify([id, name])));
+    }
+    glob.__rpcListeners[name] = cb;
+    return () => unregister(name);
+}
+/**
+ * Unregister a procedure.
+ * @param {string} name - The name of the procedure.
+ */
+function unregister(name) {
+    if (arguments.length !== 1) {
+        throw new Error(`unregister expects 1 argument: "name" ("${name}")`);
+    }
+    log(`Unregistered procedure "${name}"`);
+    if (environment === 'cef') {
+        glob[IDENTIFIER].then((id) => mp.trigger(BROWSER_UNREGISTER, JSON.stringify([id, name])));
+    }
+    glob.__rpcListeners[name] = undefined;
+}
+/**
+ * Calls a local procedure. Only procedures registered in the same context will be resolved.
+ *
+ * Can be called from any environment.
+ *
+ * @param name - The name of the locally registered procedure.
+ * @param args - Any parameters for the procedure.
+ * @param options - Any options.
+ * @returns The result from the procedure.
+ */
+function call(name, args, options = {}) {
+    if (arguments.length < 1 || arguments.length > 3) {
+        return Promise.reject(`call expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+    }
+    return promiseTimeout(callProcedure(name, args, { environment }), options.timeout);
+}
+function _callServer(name, args, extraData = {}) {
+    switch (environment) {
+        case 'server':
+            return call(name, args);
+        case 'client': {
+            const id = generateId();
+            return new Promise((resolve) => {
+                if (!extraData.noRet) {
+                    glob.__rpcPending[id] = {
+                        resolve
+                    };
+                }
+                const event = {
+                    req: 1,
+                    id,
+                    name,
+                    env: environment,
+                    args,
+                    ...extraData
+                };
+                sendEventData(event);
+            });
+        }
+        case 'cef':
+            return callClient('__rpc:callServer', [name, args, Number(extraData.noRet)]);
+    }
+}
+/**
+ * Calls a remote procedure registered on the server.
+ *
+ * Can be called from any environment.
+ *
+ * @param name - The name of the registered procedure.
+ * @param args - Any parameters for the procedure.
+ * @param options - Any options.
+ * @returns The result from the procedure.
+ */
+function callServer(name, args, options = {}) {
+    if (arguments.length < 1 || arguments.length > 3) {
+        return Promise.reject(`callServer expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+    }
+    const extraData = {};
+    if (options.noRet) {
+        extraData.noRet = 1;
+    }
+    return promiseTimeout(_callServer(name, args, extraData), options.timeout);
+}
+function _callClient(player, name, args, extraData = {}) {
+    switch (environment) {
+        case 'client':
+            return call(name, args);
+        case 'server': {
+            const id = generateId();
+            return new Promise((resolve) => {
+                if (!extraData.noRet) {
+                    glob.__rpcPending[id] = {
+                        resolve,
+                        player
+                    };
+                }
+                const event = {
+                    req: 1,
+                    id,
+                    name,
+                    env: environment,
+                    args,
+                    ...extraData
+                };
+                sendEventData(event, player);
+            });
+        }
+        case 'cef': {
+            const id = generateId();
+            return glob[IDENTIFIER].then((browserId) => {
+                return new Promise((resolve) => {
+                    if (!extraData.noRet) {
+                        glob.__rpcPending[id] = {
+                            resolve
+                        };
+                    }
+                    const event = {
+                        b: browserId,
+                        req: 1,
+                        id,
+                        name,
+                        env: environment,
+                        args,
+                        ...extraData
+                    };
+                    mp.trigger(PROCESS_EVENT, stringifyData(event));
+                });
+            });
+        }
+    }
+}
+/**
+ * Calls a remote procedure registered on the client.
+ *
+ * Can be called from any environment.
+ *
+ * @param player - The player to call the procedure on.
+ * @param name - The name of the registered procedure.
+ * @param args - Any parameters for the procedure.
+ * @param options - Any options.
+ * @returns The result from the procedure.
+ */
+function callClient(player, name, args, options = {}) {
+    switch (environment) {
+        case 'client': {
+            options = args || {};
+            args = name;
+            name = player;
+            // @ts-ignore gives access to assign 'null' type
+            player = null;
+            if (arguments.length < 1 || arguments.length > 3 || typeof name !== 'string') {
+                return Promise.reject(`callClient from the client expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+            }
+            break;
+        }
+        case 'server': {
+            if (arguments.length < 2 || arguments.length > 4 || typeof player !== 'object') {
+                return Promise.reject(`callClient from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" ("${name}")`);
+            }
+            break;
+        }
+        case 'cef': {
+            options = args || {};
+            args = name;
+            name = player;
+            // @ts-ignore gives access to assign 'null' type
+            player = null;
+            if (arguments.length < 1 || arguments.length > 3 || typeof name !== 'string') {
+                return Promise.reject(`callClient from the browser expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+            }
+            break;
+        }
+    }
+    const extraData = {};
+    if (options.noRet) {
+        extraData.noRet = 1;
+    }
+    return promiseTimeout(_callClient(player, name, args, extraData), options.timeout);
+}
+function _callBrowser(browser, name, args, extraData = {}) {
+    return new Promise((resolve) => {
+        const id = generateId();
+        if (!extraData.noRet) {
+            glob.__rpcPending[id] = {
+                resolve
+            };
+        }
+        passEventToBrowser(browser, {
+            req: 1,
+            id,
+            name,
+            env: environment,
+            args,
+            ...extraData
+        }, false);
+    });
+}
+function _callBrowsers(player, name, args, extraData = {}) {
+    switch (environment) {
+        case 'client': {
+            const browserId = glob.__rpcBrowserProcedures[name];
+            if (!browserId) {
+                return Promise.reject(`${ERR_NOT_FOUND} (${name})`);
+            }
+            const browser = glob.__rpcBrowsers[browserId];
+            if (!browser || !isBrowserValid(browser)) {
+                return Promise.reject(`${ERR_NOT_FOUND} (${name})`);
+            }
+            return _callBrowser(browser, name, args, extraData);
+        }
+        case 'server':
+            return _callClient(player, '__rpc:callBrowsers', [name, args, Number(extraData.noRet)], extraData);
+        case 'cef':
+            return _callClient(null, '__rpc:callBrowsers', [name, args, Number(extraData.noRet)], extraData);
+    }
+}
+/**
+ * Calls a remote procedure registered in any browser context.
+ *
+ * Can be called from any environment.
+ *
+ * @param player - The player to call the procedure on.
+ * @param name - The name of the registered procedure.
+ * @param args - Any parameters for the procedure.
+ * @param options - Any options.
+ * @returns The result from the procedure.
+ */
+function callBrowsers(player, name, args, options = {}) {
+    let promise;
+    const extraData = {};
+    switch (environment) {
+        case 'client':
+        case 'cef': {
+            options = args || {};
+            args = name;
+            name = player;
+            if (arguments.length < 1 || arguments.length > 3) {
+                return Promise.reject(`callBrowsers from the client or browser expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+            }
+            if (options.noRet) {
+                extraData.noRet = 1;
+            }
+            promise = _callBrowsers(null, name, args, extraData);
+            break;
+        }
+        case 'server':
+            if (arguments.length < 2 || arguments.length > 4) {
+                return Promise.reject(`callBrowsers from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" ("${name}")`);
+            }
+            if (options.noRet) {
+                extraData.noRet = 1;
+            }
+            promise = _callBrowsers(player, name, args, extraData);
+            break;
+    }
+    if (promise) {
+        return promiseTimeout(promise, options.timeout);
+    }
+    return undefined;
+}
+/**
+ * Calls a remote procedure registered in a specific browser instance.
+ *
+ * Client-side environment only.
+ *
+ * @param browser - The browser instance.
+ * @param name - The name of the registered procedure.
+ * @param args - Any parameters for the procedure.
+ * @param options - Any options.
+ * @returns The result from the procedure.
+ */
+function callBrowser(browser, name, args, options = {}) {
+    if (environment !== 'client') {
+        return Promise.reject(`callBrowser can only be used in the client environment ("${name}")`);
+    }
+    if (arguments.length < 2 || arguments.length > 4)
+        return Promise.reject(`callBrowser expects 2 to 4 arguments: "browser", "name", optional "args", and optional "options" ("${name}")`);
+    const extraData = {};
+    if (options.noRet) {
+        extraData.noRet = 1;
+    }
+    return promiseTimeout(_callBrowser(browser, name, args, extraData), options.timeout);
+}
+function callEvent(name, args, info) {
+    const listeners = glob.__rpcEvListeners[name];
+    if (listeners) {
+        listeners.forEach((listener) => listener(args, info));
+    }
+}
+/**
+ * Register an event handler.
+ * @param {string} name - The name of the event.
+ * @param {ProcedureListener} cb - The callback for the event.
+ * @returns The function, which off the event.
+ */
+function on(name, cb) {
+    if (arguments.length !== 2) {
+        throw new Error(`on expects 2 arguments: "name" and "cb" ("${name}")`);
+    }
+    log(`Registered procedure listener "${name}"`);
+    const listeners = glob.__rpcEvListeners[name] || new Set();
+    listeners.add(cb);
+    glob.__rpcEvListeners[name] = listeners;
+    return () => off(name, cb);
+}
+/**
+ * Unregister an event handler.
+ * @param {string} name - The name of the event.
+ * @param {ProcedureListener} cb - The callback for the event.
+ */
+function off(name, cb) {
+    if (arguments.length !== 2) {
+        throw new Error(`off expects 2 arguments: "name" and "cb" ("${name}")`);
+    }
+    const listeners = glob.__rpcEvListeners[name];
+    if (listeners) {
+        log(`Unregistered procedure listener "${name}"`);
+        listeners.delete(cb);
+    }
+}
+/**
+ * Triggers a local event. Only events registered in the same context will be triggered.
+ *
+ * Can be called from any environment.
+ *
+ * @param name - The name of the locally registered event.
+ * @param args - Any parameters for the event.
+ */
+function trigger(name, args) {
+    if (arguments.length < 1 || arguments.length > 2) {
+        throw new Error(`trigger expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+    }
+    callEvent(name, args, { environment });
+}
+/**
+ * Triggers an event registered on the client.
+ *
+ * Can be called from any environment.
+ *
+ * @param player - The player to call the procedure on.
+ * @param name - The name of the event.
+ * @param args - Any parameters for the event.
+ */
+function triggerClient(player, name, args) {
+    switch (environment) {
+        case 'client': {
+            args = name;
+            name = player;
+            // @ts-ignore gives access to assign 'null' type
+            player = null;
+            if (arguments.length < 1 || arguments.length > 2 || typeof name !== 'string') {
+                throw new Error(`triggerClient from the client expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+            }
+            break;
+        }
+        case 'server': {
+            if (arguments.length < 2 || arguments.length > 3 || typeof player !== 'object') {
+                throw new Error(`triggerClient from the server expects 2 or 3 arguments: "player", "name", and optional "args" ("${name}")`);
+            }
+            break;
+        }
+        case 'cef': {
+            args = name;
+            name = player;
+            // @ts-ignore gives access to assign 'null' type
+            player = null;
+            if (arguments.length < 1 || arguments.length > 2 || typeof name !== 'string') {
+                throw new Error(`triggerClient from the browser expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+            }
+            break;
+        }
+    }
+    void _callClient(player, TRIGGER_EVENT, [name, args], { noRet: 1 });
+}
+/**
+ * Triggers an event registered on the server.
+ *
+ * Can be called from any environment.
+ *
+ * @param name - The name of the event.
+ * @param args - Any parameters for the event.
+ */
+function triggerServer(name, args) {
+    if (arguments.length < 1 || arguments.length > 2) {
+        throw new Error(`triggerServer expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+    }
+    void _callServer(TRIGGER_EVENT, [name, args], { noRet: 1 });
+}
+/**
+ * Triggers an event registered in any browser context.
+ *
+ * Can be called from any environment.
+ *
+ * @param player - The player to call the procedure on.
+ * @param name - The name of the event.
+ * @param args - Any parameters for the event.
+ */
+function triggerBrowsers(player, name, args) {
+    switch (environment) {
+        case 'client':
+        case 'cef': {
+            args = name;
+            name = player;
+            // @ts-ignore gives access to assign 'null' type
+            player = null;
+            if (arguments.length < 1 || arguments.length > 2) {
+                throw new Error(`triggerBrowsers from the client or browser expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+            }
+            break;
+        }
+        case 'server': {
+            if (arguments.length < 2 || arguments.length > 3) {
+                throw new Error(`triggerBrowsers from the server expects 2 or 3 arguments: "player", "name", and optional "args" ("${name}")`);
+            }
+            break;
+        }
+    }
+    void _callClient(player, TRIGGER_EVENT_BROWSERS, [name, args], { noRet: 1 });
+}
+/**
+ * Triggers an event registered in a specific browser instance.
+ *
+ * Client-side environment only.
+ *
+ * @param browser - The browser instance.
+ * @param name - The name of the event.
+ * @param args - Any parameters for the event.
+ */
+function triggerBrowser(browser, name, args) {
+    if (environment !== 'client') {
+        throw new Error(`callBrowser can only be used in the client environment ("${name}")`);
+    }
+    if (arguments.length < 2 || arguments.length > 4) {
+        throw new Error(`callBrowser expects 2 or 3 arguments: "browser", "name", and optional "args" ("${name}")`);
+    }
+    void _callBrowser(browser, TRIGGER_EVENT, [name, args], { noRet: 1 });
+}
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+const version = '0.2.2';
+
+export { call, callBrowser, callBrowsers, callClient, callServer, off, on, register, setDebugMode, trigger, triggerBrowser, triggerBrowsers, triggerClient, triggerServer, unregister, version };
