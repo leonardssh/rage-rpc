@@ -454,12 +454,14 @@ function _callClient<T = any>(player: PlayerMp, name: string, args?: any, extraD
  * @param options - Any options.
  * @returns The result from the procedure.
  */
-export function callClient<T = any>(player: PlayerMp | string | null, name?: string | any, args?: any, options: CallOptions = {}): Promise<T> {
+export function callClient<T = any>(player: PlayerMp | string, name?: string | any, args?: any, options: CallOptions = {}): Promise<T> {
 	switch (environment) {
 		case 'client': {
 			options = args || {};
 			args = name;
 			name = player;
+
+			// @ts-ignore gives access to assign 'null' type
 			player = null;
 
 			if (arguments.length < 1 || arguments.length > 3 || typeof name !== 'string') {
@@ -485,6 +487,8 @@ export function callClient<T = any>(player: PlayerMp | string | null, name?: str
 			options = args || {};
 			args = name;
 			name = player;
+
+			// @ts-ignore gives access to assign 'null' type
 			player = null;
 
 			if (arguments.length < 1 || arguments.length > 3 || typeof name !== 'string') {
@@ -712,11 +716,13 @@ export function trigger(name: string, args?: any) {
  * @param name - The name of the event.
  * @param args - Any parameters for the event.
  */
-export function triggerClient(player: PlayerMp | string | null, name?: string | any, args?: any) {
+export function triggerClient(player: PlayerMp | string, name?: string | any, args?: any) {
 	switch (environment) {
 		case 'client': {
 			args = name;
 			name = player;
+
+			// @ts-ignore gives access to assign 'null' type
 			player = null;
 
 			if (arguments.length < 1 || arguments.length > 2 || typeof name !== 'string') {
@@ -735,6 +741,8 @@ export function triggerClient(player: PlayerMp | string | null, name?: string | 
 		case 'cef': {
 			args = name;
 			name = player;
+
+			// @ts-ignore gives access to assign 'null' type
 			player = null;
 
 			if (arguments.length < 1 || arguments.length > 2 || typeof name !== 'string') {
@@ -773,12 +781,14 @@ export function triggerServer(name: string, args?: any) {
  * @param name - The name of the event.
  * @param args - Any parameters for the event.
  */
-export function triggerBrowsers(player: PlayerMp | string | null, name?: string | any, args?: any) {
+export function triggerBrowsers(player: PlayerMp | string, name?: string | any, args?: any) {
 	switch (environment) {
 		case 'client':
 		case 'cef': {
 			args = name;
 			name = player;
+
+			// @ts-ignore gives access to assign 'null' type
 			player = null;
 
 			if (arguments.length < 1 || arguments.length > 2) {
