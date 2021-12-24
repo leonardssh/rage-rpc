@@ -7,7 +7,7 @@
 		"format": "prettier --write src/**/*.{mjs,ts,js}",
 		"prepare": "husky install .github/husky",
 		"prebuild": "pnpm run clean",
-		"build": "rollup -c ./scripts/rollup.config.js",
+		"build": "rollup -c ./scripts/rollup.config.js --configProduction",
 		"postbuild": "rimraf ./dist/src && pnpm pack",
 		"clean": "rimraf {dist,*.tgz}",
 		"watch": "rollup -w -c ./scripts/rollup.config.js",
