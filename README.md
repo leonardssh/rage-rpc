@@ -54,13 +54,13 @@ You can install via [github](https://github.com/LeonardSSH/rage-rpc)
 
 ```bash
 # With npm
-npm i github:leonardssh/rage-rpc#v0.2.3
+npm i github:leonardssh/rage-rpc#v0.2.4
 
 # With yarn
-yarn add github:leonardssh/rage-rpc#v0.2.3
+yarn add github:leonardssh/rage-rpc#v0.2.4
 
 # With pnpm
-pnpm add github:leonardssh/rage-rpc#v0.2.3
+pnpm add github:leonardssh/rage-rpc#v0.2.4
 ```
 
 From here, you can simply require the package in any RAGE context:
@@ -532,6 +532,10 @@ You can now use rage-rpc as a full on replacement for mp.events. API functions t
 ## Changelog
 
 Check the releases tab for an up-to-date changelog.
+
+#### 0.2.4
+
+-   IMPROVE: Type-safe & Type Definitions
 
 #### 0.2.3
 
