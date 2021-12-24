@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-var
-var mp;
 var MpTypes;
 (function (MpTypes) {
     MpTypes["Blip"] = "b";
@@ -17,9 +15,15 @@ function setDebugMode(state) {
     DEBUG_MODE = state;
 }
 function getEnvironment() {
-    if (mp.joaat) ;
-    if (mp.game ) ;
-    if (mp.trigger) ;
+    if (mp.joaat) {
+        return 'server';
+    }
+    if (mp.game && mp.game.joaat) {
+        return 'client';
+    }
+    if (mp.trigger) {
+        return 'cef';
+    }
     throw new Error('Unknown RAGE environment');
 }
 function log(data, type = 'info') {
@@ -27,8 +31,13 @@ function log(data, type = 'info') {
         return;
     }
     const env = getEnvironment();
-    mp.console;
-    (console)[type === 'info' ? 'log' : type](`RPC (${env}): ${data}`);
+    const isClient = mp.console;
+    const clientFormatLog = {
+        info: 'logInfo',
+        error: 'logError',
+        warn: 'logWarn'
+    };
+    (isClient ? mp.console : console)[isClient ? clientFormatLog[type] : type === 'info' ? 'log' : type](`RPC (${env}): ${data}`);
 }
 function isObjectMpType(obj, type) {
     const client = getEnvironment() === 'client';
