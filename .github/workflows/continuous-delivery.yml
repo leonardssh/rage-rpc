@@ -54,7 +54,7 @@ jobs:
         run: pnpm install
 
       - name: Build
-        run: pnpm build --configProduction
+        run: pnpm build
 
       - name: Publish
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
