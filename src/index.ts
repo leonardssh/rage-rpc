@@ -1,17 +1,4 @@
-import {
-	getEnvironment,
-	isBrowserValid,
-	parseData,
-	stringifyData,
-	generateId,
-	chunkSubstr,
-	promiseTimeout,
-	setDebugMode,
-	log,
-	PlayerMp,
-	BrowserMp,
-	mp
-} from './helpers';
+import { getEnvironment, isBrowserValid, parseData, stringifyData, generateId, chunkSubstr, promiseTimeout, setDebugMode, log } from './helpers';
 
 export type ProcedureListener = (args: any, info: ProcedureListenerInfo) => any;
 
