@@ -1,3 +1,23 @@
+declare interface BrowserMp {
+	url: string;
+	execute: (code: string) => void;
+	[property: string]: any;
+}
+
+declare interface PlayerMp {
+	call: (eventName: string, args?: any[]) => void;
+	[property: string]: any;
+}
+
+export declare type ProcedureListener = (args: any, info: ProcedureListenerInfo) => any;
+
+export declare interface ProcedureListenerInfo {
+	environment: string;
+	id?: string;
+	player?: PlayerMp;
+	browser?: BrowserMp;
+}
+
 /**
  * Calls a local procedure. Only procedures registered in the same context will be resolved.
  *
@@ -34,7 +54,8 @@ export declare function callBrowser<T = any>(browser: BrowserMp, name: string, a
  * @param options - Any options.
  * @returns The result from the procedure.
  */
-export declare function callBrowsers<T = any>(player: PlayerMp | string, name?: string | any, args?: any, options?: CallOptions): Promise<T> | undefined;
+export declare function callBrowsers<T = any>(name: string, args?: any, options?: CallOptions): Promise<T> | undefined;
+export declare function callBrowsers<T = any>(player: PlayerMp, name: string, args?: any, options?: CallOptions): Promise<T> | undefined;
 
 /**
  * Calls a remote procedure registered on the client.
@@ -47,11 +68,12 @@ export declare function callBrowsers<T = any>(player: PlayerMp | string, name?: 
  * @param options - Any options.
  * @returns The result from the procedure.
  */
-export declare function callClient<T = any>(player: PlayerMp | string, name?: string | any, args?: any, options?: CallOptions): Promise<T>;
+export declare function callClient<T = any>(name: string, args?: any, options?: CallOptions): Promise<T>;
+export declare function callClient<T = any>(player: PlayerMp, name: string, args?: any, options?: CallOptions): Promise<T>;
 
 export declare interface CallOptions {
-    timeout?: number;
-    noRet?: boolean;
+	timeout?: number;
+	noRet?: boolean;
 }
 
 /**
@@ -80,15 +102,6 @@ export declare function off(name: string, cb: ProcedureListener): void;
  * @returns The function, which off the event.
  */
 export declare function on(name: string, cb: ProcedureListener): () => void;
-
-export declare type ProcedureListener = (args: any, info: ProcedureListenerInfo) => any;
-
-export declare interface ProcedureListenerInfo {
-    environment: string;
-    id?: string;
-    player?: PlayerMp;
-    browser?: BrowserMp;
-}
 
 /**
  * Register a procedure.
@@ -130,7 +143,8 @@ export declare function triggerBrowser(browser: BrowserMp, name: string, args?: 
  * @param name - The name of the event.
  * @param args - Any parameters for the event.
  */
-export declare function triggerBrowsers(player: PlayerMp | string, name?: string | any, args?: any): void;
+export declare function triggerBrowsers(name: string, args?: any): void;
+export declare function triggerBrowsers(player: PlayerMp, name: string, args?: any): void;
 
 /**
  * Triggers an event registered on the client.
@@ -141,7 +155,8 @@ export declare function triggerBrowsers(player: PlayerMp | string, name?: string
  * @param name - The name of the event.
  * @param args - Any parameters for the event.
  */
-export declare function triggerClient(player: PlayerMp | string, name?: string | any, args?: any): void;
+export declare function triggerClient(name: string, args?: any): void;
+export declare function triggerClient(player: PlayerMp, name: string, args?: any): void;
 
 /**
  * Triggers an event registered on the server.
@@ -161,4 +176,4 @@ export declare function unregister(name: string): void;
 
 export declare const version: string;
 
-export { }
+export {};

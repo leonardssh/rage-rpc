@@ -4,6 +4,8 @@
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.rpc = {}));
 })(this, (function (exports) { 'use strict';
 
+	// eslint-disable-next-line no-var
+	var mp;
 	var MpTypes;
 	(function (MpTypes) {
 	    MpTypes["Blip"] = "b";
@@ -21,15 +23,9 @@
 	    DEBUG_MODE = state;
 	}
 	function getEnvironment() {
-	    if (mp.joaat) {
-	        return 'server';
-	    }
-	    if (mp.game && mp.game.joaat) {
-	        return 'client';
-	    }
-	    if (mp.trigger) {
-	        return 'cef';
-	    }
+	    if (mp.joaat) ;
+	    if (mp.game ) ;
+	    if (mp.trigger) ;
 	    throw new Error('Unknown RAGE environment');
 	}
 	function log(data, type = 'info') {
@@ -37,13 +33,8 @@
 	        return;
 	    }
 	    const env = getEnvironment();
-	    const isClient = mp.console;
-	    const clientFormatLog = {
-	        info: 'logInfo',
-	        error: 'logError',
-	        warn: 'logWarn'
-	    };
-	    (isClient ? mp.console : console)[isClient ? clientFormatLog[type] : type === 'info' ? 'log' : type](`RPC (${env}): ${data}`);
+	    mp.console;
+	    (console)[type === 'info' ? 'log' : type](`RPC (${env}): ${data}`);
 	}
 	function isObjectMpType(obj, type) {
 	    const client = getEnvironment() === 'client';
@@ -392,8 +383,8 @@
 	 * @returns The function, which unregister the event.
 	 */
 	function register(name, cb) {
-	    if (arguments.length !== 2) {
-	        throw new Error(`register expects 2 arguments: "name" and "cb" ("${name}")`);
+	    if (typeof name !== 'string' || !cb || typeof cb !== 'function') {
+	        throw new Error(`register expects 2 arguments: "name" and "cb" - ("${name}")`);
 	    }
 	    log(`Registered procedure "${name}"`);
 	    if (environment === 'cef') {
@@ -407,8 +398,8 @@
 	 * @param {string} name - The name of the procedure.
 	 */
 	function unregister(name) {
-	    if (arguments.length !== 1) {
-	        throw new Error(`unregister expects 1 argument: "name" ("${name}")`);
+	    if (typeof name !== 'string') {
+	        throw new Error(`unregister expects 1 argument: "name" - ("${name}")`);
 	    }
 	    log(`Unregistered procedure "${name}"`);
 	    if (environment === 'cef') {
@@ -427,8 +418,8 @@
 	 * @returns The result from the procedure.
 	 */
 	function call(name, args, options = {}) {
-	    if (arguments.length < 1 || arguments.length > 3) {
-	        return Promise.reject(`call expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+	    if (typeof name !== 'string') {
+	        return Promise.reject(`call expects 1 to 3 arguments: "name", optional "args", and optional "options" - ("${name}")`);
 	    }
 	    return promiseTimeout(callProcedure(name, args, { environment }), options.timeout);
 	}
@@ -470,8 +461,8 @@
 	 * @returns The result from the procedure.
 	 */
 	function callServer(name, args, options = {}) {
-	    if (arguments.length < 1 || arguments.length > 3) {
-	        return Promise.reject(`callServer expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+	    if (typeof name !== 'string') {
+	        return Promise.reject(`callServer expects 1 to 3 arguments: "name", optional "args", and optional "options" - ("${name}")`);
 	    }
 	    const extraData = {};
 	    if (options.noRet) {
@@ -546,14 +537,14 @@
 	            name = player;
 	            // @ts-ignore gives access to assign 'null' type
 	            player = null;
-	            if (arguments.length < 1 || arguments.length > 3 || typeof name !== 'string') {
-	                return Promise.reject(`callClient from the client expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+	            if (typeof name !== 'string') {
+	                return Promise.reject(`callClient from the client expects 1 to 3 arguments: "name", optional "args", and optional "options" - ("${name}")`);
 	            }
 	            break;
 	        }
 	        case 'server': {
-	            if (arguments.length < 2 || arguments.length > 4 || typeof player !== 'object') {
-	                return Promise.reject(`callClient from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" ("${name}")`);
+	            if (typeof name !== 'string' || typeof player !== 'object') {
+	                return Promise.reject(`callClient from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" - ("${name}")`);
 	            }
 	            break;
 	        }
@@ -563,8 +554,8 @@
 	            name = player;
 	            // @ts-ignore gives access to assign 'null' type
 	            player = null;
-	            if (arguments.length < 1 || arguments.length > 3 || typeof name !== 'string') {
-	                return Promise.reject(`callClient from the browser expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+	            if (typeof name !== 'string') {
+	                return Promise.reject(`callClient from the browser expects 1 to 3 arguments: "name", optional "args", and optional "options" - ("${name}")`);
 	            }
 	            break;
 	        }
@@ -632,8 +623,8 @@
 	            options = args || {};
 	            args = name;
 	            name = player;
-	            if (arguments.length < 1 || arguments.length > 3) {
-	                return Promise.reject(`callBrowsers from the client or browser expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+	            if (typeof name !== 'string') {
+	                return Promise.reject(`callBrowsers from the client or browser expects 1 to 3 arguments: "name", optional "args", and optional "options" - ("${name}")`);
 	            }
 	            if (options.noRet) {
 	                extraData.noRet = 1;
@@ -642,8 +633,8 @@
 	            break;
 	        }
 	        case 'server':
-	            if (arguments.length < 2 || arguments.length > 4) {
-	                return Promise.reject(`callBrowsers from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" ("${name}")`);
+	            if (typeof name !== 'string' || typeof player !== 'object') {
+	                return Promise.reject(`callBrowsers from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" - ("${name}")`);
 	            }
 	            if (options.noRet) {
 	                extraData.noRet = 1;
@@ -669,10 +660,11 @@
 	 */
 	function callBrowser(browser, name, args, options = {}) {
 	    if (environment !== 'client') {
-	        return Promise.reject(`callBrowser can only be used in the client environment ("${name}")`);
+	        return Promise.reject(`callBrowser can only be used in the client environment - ("${name}")`);
 	    }
-	    if (arguments.length < 2 || arguments.length > 4)
-	        return Promise.reject(`callBrowser expects 2 to 4 arguments: "browser", "name", optional "args", and optional "options" ("${name}")`);
+	    if (!isBrowserValid(browser) || typeof name !== 'string') {
+	        return Promise.reject(`callBrowser expects 2 to 4 arguments: "browser", "name", optional "args", and optional "options" - ("${name}")`);
+	    }
 	    const extraData = {};
 	    if (options.noRet) {
 	        extraData.noRet = 1;
@@ -692,8 +684,8 @@
 	 * @returns The function, which off the event.
 	 */
 	function on(name, cb) {
-	    if (arguments.length !== 2) {
-	        throw new Error(`on expects 2 arguments: "name" and "cb" ("${name}")`);
+	    if (typeof name !== 'string' || !cb || typeof cb !== 'function') {
+	        throw new Error(`on expects 2 arguments: "name" and "cb" - ("${name}")`);
 	    }
 	    log(`Registered procedure listener "${name}"`);
 	    const listeners = glob.__rpcEvListeners[name] || new Set();
@@ -707,8 +699,8 @@
 	 * @param {ProcedureListener} cb - The callback for the event.
 	 */
 	function off(name, cb) {
-	    if (arguments.length !== 2) {
-	        throw new Error(`off expects 2 arguments: "name" and "cb" ("${name}")`);
+	    if (typeof name !== 'string' || !cb || typeof cb !== 'function') {
+	        throw new Error(`off expects 2 arguments: "name" and "cb" - ("${name}")`);
 	    }
 	    const listeners = glob.__rpcEvListeners[name];
 	    if (listeners) {
@@ -725,8 +717,8 @@
 	 * @param args - Any parameters for the event.
 	 */
 	function trigger(name, args) {
-	    if (arguments.length < 1 || arguments.length > 2) {
-	        throw new Error(`trigger expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+	    if (typeof name !== 'string') {
+	        throw new Error(`trigger expects 1 or 2 arguments: "name", and optional "args" - ("${name}")`);
 	    }
 	    callEvent(name, args, { environment });
 	}
@@ -746,14 +738,14 @@
 	            name = player;
 	            // @ts-ignore gives access to assign 'null' type
 	            player = null;
-	            if (arguments.length < 1 || arguments.length > 2 || typeof name !== 'string') {
-	                throw new Error(`triggerClient from the client expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+	            if (typeof name !== 'string') {
+	                throw new Error(`triggerClient from the client expects 1 or 2 arguments: "name", and optional "args" - ("${name}")`);
 	            }
 	            break;
 	        }
 	        case 'server': {
-	            if (arguments.length < 2 || arguments.length > 3 || typeof player !== 'object') {
-	                throw new Error(`triggerClient from the server expects 2 or 3 arguments: "player", "name", and optional "args" ("${name}")`);
+	            if (typeof name !== 'string' || typeof player !== 'object') {
+	                throw new Error(`triggerClient from the server expects 2 or 3 arguments: "player", "name", and optional "args" - ("${name}")`);
 	            }
 	            break;
 	        }
@@ -762,8 +754,8 @@
 	            name = player;
 	            // @ts-ignore gives access to assign 'null' type
 	            player = null;
-	            if (arguments.length < 1 || arguments.length > 2 || typeof name !== 'string') {
-	                throw new Error(`triggerClient from the browser expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+	            if (typeof name !== 'string') {
+	                throw new Error(`triggerClient from the browser expects 1 or 2 arguments: "name", and optional "args" - ("${name}")`);
 	            }
 	            break;
 	        }
@@ -779,8 +771,8 @@
 	 * @param args - Any parameters for the event.
 	 */
 	function triggerServer(name, args) {
-	    if (arguments.length < 1 || arguments.length > 2) {
-	        throw new Error(`triggerServer expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+	    if (typeof name !== 'string') {
+	        throw new Error(`triggerServer expects 1 or 2 arguments: "name", and optional "args" - ("${name}")`);
 	    }
 	    void _callServer(TRIGGER_EVENT, [name, args], { noRet: 1 });
 	}
@@ -801,14 +793,14 @@
 	            name = player;
 	            // @ts-ignore gives access to assign 'null' type
 	            player = null;
-	            if (arguments.length < 1 || arguments.length > 2) {
-	                throw new Error(`triggerBrowsers from the client or browser expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+	            if (typeof name !== 'string') {
+	                throw new Error(`triggerBrowsers from the client or browser expects 1 or 2 arguments: "name", and optional "args" - ("${name}")`);
 	            }
 	            break;
 	        }
 	        case 'server': {
-	            if (arguments.length < 2 || arguments.length > 3) {
-	                throw new Error(`triggerBrowsers from the server expects 2 or 3 arguments: "player", "name", and optional "args" ("${name}")`);
+	            if (typeof name !== 'string' || typeof player !== 'object') {
+	                throw new Error(`triggerBrowsers from the server expects 2 or 3 arguments: "player", "name", and optional "args" - ("${name}")`);
 	            }
 	            break;
 	        }
@@ -826,10 +818,10 @@
 	 */
 	function triggerBrowser(browser, name, args) {
 	    if (environment !== 'client') {
-	        throw new Error(`callBrowser can only be used in the client environment ("${name}")`);
+	        throw new Error(`callBrowser can only be used in the client environment - ("${name}")`);
 	    }
-	    if (arguments.length < 2 || arguments.length > 4) {
-	        throw new Error(`callBrowser expects 2 or 3 arguments: "browser", "name", and optional "args" ("${name}")`);
+	    if (!isBrowserValid(browser) || typeof name !== 'string') {
+	        throw new Error(`callBrowser expects 2 or 3 arguments: "browser", "name", and optional "args" - ("${name}")`);
 	    }
 	    void _callBrowser(browser, TRIGGER_EVENT, [name, args], { noRet: 1 });
 	}
