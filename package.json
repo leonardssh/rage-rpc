@@ -8,8 +8,7 @@
 		"prepare": "husky install .github/husky",
 		"prebuild": "pnpm run clean",
 		"build": "rollup -c ./scripts/rollup.config.js",
-		"postbuild": "pnpm run types && rimraf ./dist/src && pnpm pack",
-		"types": "api-extractor run --local --verbose",
+		"postbuild": "rimraf ./dist/src && pnpm pack",
 		"clean": "rimraf {dist,*.tgz}",
 		"watch": "rollup -w -c ./scripts/rollup.config.js",
 		"update": "pnpm update --latest --interactive",
@@ -39,7 +38,6 @@
 	"devDependencies": {
 		"@commitlint/cli": "^15.0.0",
 		"@commitlint/config-conventional": "^15.0.0",
-		"@microsoft/api-extractor": "^7.19.2",
 		"@rollup/plugin-node-resolve": "^13.1.1",
 		"@types/node": "^17.0.2",
 		"@typescript-eslint/eslint-plugin": "^5.8.0",

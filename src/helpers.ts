@@ -1,3 +1,17 @@
+// eslint-disable-next-line no-var
+export var mp: any;
+
+export interface BrowserMp {
+	url: string;
+	execute: (code: string) => void;
+	[property: string]: any;
+}
+
+export interface PlayerMp {
+	call: (eventName: string, args?: any[]) => void;
+	[property: string]: any;
+}
+
 enum MpTypes {
 	Blip = 'b',
 	Checkpoint = 'cp',

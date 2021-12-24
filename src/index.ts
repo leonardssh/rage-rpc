@@ -1,4 +1,17 @@
-import { getEnvironment, isBrowserValid, parseData, stringifyData, generateId, chunkSubstr, promiseTimeout, setDebugMode, log } from './helpers';
+import {
+	getEnvironment,
+	isBrowserValid,
+	parseData,
+	stringifyData,
+	generateId,
+	chunkSubstr,
+	promiseTimeout,
+	setDebugMode,
+	log,
+	PlayerMp,
+	BrowserMp,
+	mp
+} from './helpers';
 
 export type ProcedureListener = (args: any, info: ProcedureListenerInfo) => any;
 
@@ -280,8 +293,8 @@ function sendEventData(event: Event, player?: PlayerMp) {
  * @returns The function, which unregister the event.
  */
 export function register(name: string, cb: ProcedureListener) {
-	if (arguments.length !== 2) {
-		throw new Error(`register expects 2 arguments: "name" and "cb" ("${name}")`);
+	if (typeof name !== 'string' || !cb || typeof cb !== 'function') {
+		throw new Error(`register expects 2 arguments: "name" and "cb" - ("${name}")`);
 	}
 
 	log(`Registered procedure "${name}"`);
@@ -300,8 +313,8 @@ export function register(name: string, cb: ProcedureListener) {
  * @param {string} name - The name of the procedure.
  */
 export function unregister(name: string) {
-	if (arguments.length !== 1) {
-		throw new Error(`unregister expects 1 argument: "name" ("${name}")`);
+	if (typeof name !== 'string') {
+		throw new Error(`unregister expects 1 argument: "name" - ("${name}")`);
 	}
 
 	log(`Unregistered procedure "${name}"`);
@@ -324,8 +337,8 @@ export function unregister(name: string) {
  * @returns The result from the procedure.
  */
 export function call<T = any>(name: string, args?: any, options: CallOptions = {}): Promise<T> {
-	if (arguments.length < 1 || arguments.length > 3) {
-		return Promise.reject(`call expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+	if (typeof name !== 'string') {
+		return Promise.reject(`call expects 1 to 3 arguments: "name", optional "args", and optional "options" - ("${name}")`);
 	}
 
 	return promiseTimeout(callProcedure(name, args, { environment }), options.timeout);
@@ -374,8 +387,8 @@ function _callServer<T = any>(name: string, args?: any, extraData: any = {}): Pr
  * @returns The result from the procedure.
  */
 export function callServer<T = any>(name: string, args?: any, options: CallOptions = {}): Promise<T> {
-	if (arguments.length < 1 || arguments.length > 3) {
-		return Promise.reject(`callServer expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`);
+	if (typeof name !== 'string') {
+		return Promise.reject(`callServer expects 1 to 3 arguments: "name", optional "args", and optional "options" - ("${name}")`);
 	}
 
 	const extraData: any = {};
@@ -464,9 +477,9 @@ export function callClient<T = any>(player: PlayerMp | string, name?: string | a
 			// @ts-ignore gives access to assign 'null' type
 			player = null;
 
-			if (arguments.length < 1 || arguments.length > 3 || typeof name !== 'string') {
+			if (typeof name !== 'string') {
 				return Promise.reject(
-					`callClient from the client expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`
+					`callClient from the client expects 1 to 3 arguments: "name", optional "args", and optional "options" - ("${name}")`
 				);
 			}
 
@@ -474,9 +487,9 @@ export function callClient<T = any>(player: PlayerMp | string, name?: string | a
 		}
 
 		case 'server': {
-			if (arguments.length < 2 || arguments.length > 4 || typeof player !== 'object') {
+			if (typeof name !== 'string' || typeof player !== 'object') {
 				return Promise.reject(
-					`callClient from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" ("${name}")`
+					`callClient from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" - ("${name}")`
 				);
 			}
 
@@ -491,9 +504,9 @@ export function callClient<T = any>(player: PlayerMp | string, name?: string | a
 			// @ts-ignore gives access to assign 'null' type
 			player = null;
 
-			if (arguments.length < 1 || arguments.length > 3 || typeof name !== 'string') {
+			if (typeof name !== 'string') {
 				return Promise.reject(
-					`callClient from the browser expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`
+					`callClient from the browser expects 1 to 3 arguments: "name", optional "args", and optional "options" - ("${name}")`
 				);
 			}
 
@@ -581,9 +594,9 @@ export function callBrowsers<T = any>(player: PlayerMp | string, name?: string |
 			args = name;
 			name = player;
 
-			if (arguments.length < 1 || arguments.length > 3) {
+			if (typeof name !== 'string') {
 				return Promise.reject(
-					`callBrowsers from the client or browser expects 1 to 3 arguments: "name", optional "args", and optional "options" ("${name}")`
+					`callBrowsers from the client or browser expects 1 to 3 arguments: "name", optional "args", and optional "options" - ("${name}")`
 				);
 			}
 
@@ -596,9 +609,9 @@ export function callBrowsers<T = any>(player: PlayerMp | string, name?: string |
 		}
 
 		case 'server':
-			if (arguments.length < 2 || arguments.length > 4) {
+			if (typeof name !== 'string' || typeof player !== 'object') {
 				return Promise.reject(
-					`callBrowsers from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" ("${name}")`
+					`callBrowsers from the server expects 2 to 4 arguments: "player", "name", optional "args", and optional "options" - ("${name}")`
 				);
 			}
 
@@ -630,11 +643,12 @@ export function callBrowsers<T = any>(player: PlayerMp | string, name?: string |
  */
 export function callBrowser<T = any>(browser: BrowserMp, name: string, args?: any, options: CallOptions = {}): Promise<T> {
 	if (environment !== 'client') {
-		return Promise.reject(`callBrowser can only be used in the client environment ("${name}")`);
+		return Promise.reject(`callBrowser can only be used in the client environment - ("${name}")`);
 	}
 
-	if (arguments.length < 2 || arguments.length > 4)
-		return Promise.reject(`callBrowser expects 2 to 4 arguments: "browser", "name", optional "args", and optional "options" ("${name}")`);
+	if (!isBrowserValid(browser) || typeof name !== 'string') {
+		return Promise.reject(`callBrowser expects 2 to 4 arguments: "browser", "name", optional "args", and optional "options" - ("${name}")`);
+	}
 
 	const extraData: any = {};
 
@@ -659,8 +673,8 @@ function callEvent(name: string, args: any, info: ProcedureListenerInfo) {
  * @returns The function, which off the event.
  */
 export function on(name: string, cb: ProcedureListener) {
-	if (arguments.length !== 2) {
-		throw new Error(`on expects 2 arguments: "name" and "cb" ("${name}")`);
+	if (typeof name !== 'string' || !cb || typeof cb !== 'function') {
+		throw new Error(`on expects 2 arguments: "name" and "cb" - ("${name}")`);
 	}
 
 	log(`Registered procedure listener "${name}"`);
@@ -679,8 +693,8 @@ export function on(name: string, cb: ProcedureListener) {
  * @param {ProcedureListener} cb - The callback for the event.
  */
 export function off(name: string, cb: ProcedureListener) {
-	if (arguments.length !== 2) {
-		throw new Error(`off expects 2 arguments: "name" and "cb" ("${name}")`);
+	if (typeof name !== 'string' || !cb || typeof cb !== 'function') {
+		throw new Error(`off expects 2 arguments: "name" and "cb" - ("${name}")`);
 	}
 
 	const listeners = glob.__rpcEvListeners[name];
@@ -700,8 +714,8 @@ export function off(name: string, cb: ProcedureListener) {
  * @param args - Any parameters for the event.
  */
 export function trigger(name: string, args?: any) {
-	if (arguments.length < 1 || arguments.length > 2) {
-		throw new Error(`trigger expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+	if (typeof name !== 'string') {
+		throw new Error(`trigger expects 1 or 2 arguments: "name", and optional "args" - ("${name}")`);
 	}
 
 	callEvent(name, args, { environment });
@@ -725,19 +739,21 @@ export function triggerClient(player: PlayerMp | string, name?: string | any, ar
 			// @ts-ignore gives access to assign 'null' type
 			player = null;
 
-			if (arguments.length < 1 || arguments.length > 2 || typeof name !== 'string') {
-				throw new Error(`triggerClient from the client expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+			if (typeof name !== 'string') {
+				throw new Error(`triggerClient from the client expects 1 or 2 arguments: "name", and optional "args" - ("${name}")`);
 			}
 
 			break;
 		}
+
 		case 'server': {
-			if (arguments.length < 2 || arguments.length > 3 || typeof player !== 'object') {
-				throw new Error(`triggerClient from the server expects 2 or 3 arguments: "player", "name", and optional "args" ("${name}")`);
+			if (typeof name !== 'string' || typeof player !== 'object') {
+				throw new Error(`triggerClient from the server expects 2 or 3 arguments: "player", "name", and optional "args" - ("${name}")`);
 			}
 
 			break;
 		}
+
 		case 'cef': {
 			args = name;
 			name = player;
@@ -745,8 +761,8 @@ export function triggerClient(player: PlayerMp | string, name?: string | any, ar
 			// @ts-ignore gives access to assign 'null' type
 			player = null;
 
-			if (arguments.length < 1 || arguments.length > 2 || typeof name !== 'string') {
-				throw new Error(`triggerClient from the browser expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+			if (typeof name !== 'string') {
+				throw new Error(`triggerClient from the browser expects 1 or 2 arguments: "name", and optional "args" - ("${name}")`);
 			}
 
 			break;
@@ -765,8 +781,8 @@ export function triggerClient(player: PlayerMp | string, name?: string | any, ar
  * @param args - Any parameters for the event.
  */
 export function triggerServer(name: string, args?: any) {
-	if (arguments.length < 1 || arguments.length > 2) {
-		throw new Error(`triggerServer expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+	if (typeof name !== 'string') {
+		throw new Error(`triggerServer expects 1 or 2 arguments: "name", and optional "args" - ("${name}")`);
 	}
 
 	void _callServer(TRIGGER_EVENT, [name, args], { noRet: 1 });
@@ -791,16 +807,16 @@ export function triggerBrowsers(player: PlayerMp | string, name?: string | any, 
 			// @ts-ignore gives access to assign 'null' type
 			player = null;
 
-			if (arguments.length < 1 || arguments.length > 2) {
-				throw new Error(`triggerBrowsers from the client or browser expects 1 or 2 arguments: "name", and optional "args" ("${name}")`);
+			if (typeof name !== 'string') {
+				throw new Error(`triggerBrowsers from the client or browser expects 1 or 2 arguments: "name", and optional "args" - ("${name}")`);
 			}
 
 			break;
 		}
 
 		case 'server': {
-			if (arguments.length < 2 || arguments.length > 3) {
-				throw new Error(`triggerBrowsers from the server expects 2 or 3 arguments: "player", "name", and optional "args" ("${name}")`);
+			if (typeof name !== 'string' || typeof player !== 'object') {
+				throw new Error(`triggerBrowsers from the server expects 2 or 3 arguments: "player", "name", and optional "args" - ("${name}")`);
 			}
 
 			break;
@@ -821,11 +837,11 @@ export function triggerBrowsers(player: PlayerMp | string, name?: string | any, 
  */
 export function triggerBrowser(browser: BrowserMp, name: string, args?: any) {
 	if (environment !== 'client') {
-		throw new Error(`callBrowser can only be used in the client environment ("${name}")`);
+		throw new Error(`callBrowser can only be used in the client environment - ("${name}")`);
 	}
 
-	if (arguments.length < 2 || arguments.length > 4) {
-		throw new Error(`callBrowser expects 2 or 3 arguments: "browser", "name", and optional "args" ("${name}")`);
+	if (!isBrowserValid(browser) || typeof name !== 'string') {
+		throw new Error(`callBrowser expects 2 or 3 arguments: "browser", "name", and optional "args" - ("${name}")`);
 	}
 
 	void _callBrowser(browser, TRIGGER_EVENT, [name, args], { noRet: 1 });
