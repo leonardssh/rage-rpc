@@ -54,13 +54,13 @@ You can install via [github](https://github.com/LeonardSSH/rage-rpc)
 
 ```bash
 # With npm
-npm i github:leonardssh/rage-rpc#v0.2.4
+npm i github:leonardssh/rage-rpc#v0.2.5
 
 # With yarn
-yarn add github:leonardssh/rage-rpc#v0.2.4
+yarn add github:leonardssh/rage-rpc#v0.2.5
 
 # With pnpm
-pnpm add github:leonardssh/rage-rpc#v0.2.4
+pnpm add github:leonardssh/rage-rpc#v0.2.5
 ```
 
 From here, you can simply require the package in any RAGE context:
