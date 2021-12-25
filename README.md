@@ -533,6 +533,11 @@ You can now use rage-rpc as a full on replacement for mp.events. API functions t
 
 Check the releases tab for an up-to-date changelog.
 
+#### 0.2.5
+
+-   FIX: Use Player & Browser instead of Mp version
+-   FIX: ProcedureListenerInfo player & browser types
+
 #### 0.2.4
 
 -   IMPROVE: Type-safe & Type Definitions
