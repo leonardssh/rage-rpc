@@ -1,21 +1,21 @@
-declare interface BrowserMp {
+declare interface Browser {
 	url: string;
 	execute: (code: string) => void;
 	[property: string]: any;
 }
 
-declare interface PlayerMp {
+declare interface Player {
 	call: (eventName: string, args?: any[]) => void;
 	[property: string]: any;
 }
 
 export declare type ProcedureListener = (args: any, info: ProcedureListenerInfo) => any;
 
-export declare interface ProcedureListenerInfo {
+export declare interface ProcedureListenerInfo<T = any, K = any> {
 	environment: string;
 	id?: string;
-	player?: PlayerMp;
-	browser?: BrowserMp;
+	player?: T;
+	browser?: K;
 }
 
 /**
@@ -41,7 +41,7 @@ export declare function call<T = any>(name: string, args?: any, options?: CallOp
  * @param options - Any options.
  * @returns The result from the procedure.
  */
-export declare function callBrowser<T = any>(browser: BrowserMp, name: string, args?: any, options?: CallOptions): Promise<T>;
+export declare function callBrowser<T = any>(browser: Browser, name: string, args?: any, options?: CallOptions): Promise<T>;
 
 /**
  * Calls a remote procedure registered in any browser context.
@@ -55,7 +55,7 @@ export declare function callBrowser<T = any>(browser: BrowserMp, name: string, a
  * @returns The result from the procedure.
  */
 export declare function callBrowsers<T = any>(name: string, args?: any, options?: CallOptions): Promise<T> | undefined;
-export declare function callBrowsers<T = any>(player: PlayerMp, name: string, args?: any, options?: CallOptions): Promise<T> | undefined;
+export declare function callBrowsers<T = any>(player: Player, name: string, args?: any, options?: CallOptions): Promise<T> | undefined;
 
 /**
  * Calls a remote procedure registered on the client.
@@ -69,7 +69,7 @@ export declare function callBrowsers<T = any>(player: PlayerMp, name: string, ar
  * @returns The result from the procedure.
  */
 export declare function callClient<T = any>(name: string, args?: any, options?: CallOptions): Promise<T>;
-export declare function callClient<T = any>(player: PlayerMp, name: string, args?: any, options?: CallOptions): Promise<T>;
+export declare function callClient<T = any>(player: Player, name: string, args?: any, options?: CallOptions): Promise<T>;
 
 export declare interface CallOptions {
 	timeout?: number;
@@ -132,7 +132,7 @@ export declare function trigger(name: string, args?: any): void;
  * @param name - The name of the event.
  * @param args - Any parameters for the event.
  */
-export declare function triggerBrowser(browser: BrowserMp, name: string, args?: any): void;
+export declare function triggerBrowser(browser: Browser, name: string, args?: any): void;
 
 /**
  * Triggers an event registered in any browser context.
@@ -144,7 +144,7 @@ export declare function triggerBrowser(browser: BrowserMp, name: string, args?: 
  * @param args - Any parameters for the event.
  */
 export declare function triggerBrowsers(name: string, args?: any): void;
-export declare function triggerBrowsers(player: PlayerMp, name: string, args?: any): void;
+export declare function triggerBrowsers(player: Player, name: string, args?: any): void;
 
 /**
  * Triggers an event registered on the client.
@@ -156,7 +156,7 @@ export declare function triggerBrowsers(player: PlayerMp, name: string, args?: a
  * @param args - Any parameters for the event.
  */
 export declare function triggerClient(name: string, args?: any): void;
-export declare function triggerClient(player: PlayerMp, name: string, args?: any): void;
+export declare function triggerClient(player: Player, name: string, args?: any): void;
 
 /**
  * Triggers an event registered on the server.
