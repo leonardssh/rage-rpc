@@ -198,7 +198,7 @@ export function promiseTimeout(promise: Promise<any>, timeout?: number) {
 	return promise;
 }
 
-export function isBrowserValid(browser: BrowserMp): boolean {
+export function isBrowserValid(browser: Browser): boolean {
 	try {
 		browser.url;
 	} catch (e) {

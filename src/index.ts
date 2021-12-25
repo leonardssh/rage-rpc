@@ -2,11 +2,11 @@ import { getEnvironment, isBrowserValid, parseData, stringifyData, generateId, c
 
 export type ProcedureListener = (args: any, info: ProcedureListenerInfo) => any;
 
-export interface ProcedureListenerInfo {
+export interface ProcedureListenerInfo<T = any, K = any> {
 	environment: string;
 	id?: string;
-	player?: PlayerMp;
-	browser?: BrowserMp;
+	player?: T;
+	browser?: K;
 }
 
 export interface CallOptions {
@@ -45,7 +45,7 @@ const glob = environment === 'cef' ? window : (global as any);
 if (!glob[PROCESS_EVENT_PARTIAL]) {
 	glob.__rpcPartialData = {};
 
-	glob[PROCESS_EVENT_PARTIAL] = (player: PlayerMp | string | number, id: number, index: number, size: number | string, rawData?: string) => {
+	glob[PROCESS_EVENT_PARTIAL] = (player: Player | string | number, id: number, index: number, size: number | string, rawData?: string) => {
 		if (environment !== 'server') {
 			rawData = size as string;
 			size = index as number;
@@ -76,7 +76,7 @@ if (!glob[PROCESS_EVENT]) {
 	glob.__rpcPending = {};
 	glob.__rpcEvListeners = {};
 
-	glob[PROCESS_EVENT] = (player: PlayerMp | string, rawData?: string) => {
+	glob[PROCESS_EVENT] = (player: Player | string, rawData?: string) => {
 		if (environment !== 'server') {
 			rawData = player as string;
 		}
@@ -91,7 +91,7 @@ if (!glob[PROCESS_EVENT]) {
 			};
 
 			if (environment === 'server') {
-				info.player = player as PlayerMp;
+				info.player = player as Player;
 			}
 
 			const part = {
@@ -167,13 +167,13 @@ if (!glob[PROCESS_EVENT]) {
 			// set up internal pass-through events
 			register('__rpc:callServer', ([name, args, noRet], info) => _callServer(name, args, { fenv: info.environment, noRet }));
 			register('__rpc:callBrowsers', ([name, args, noRet], info) =>
-				_callBrowsers(null as unknown as PlayerMp, name, args, { fenv: info.environment, noRet })
+				_callBrowsers(null as unknown as Player, name, args, { fenv: info.environment, noRet })
 			);
 
 			// set up browser identifiers
 			glob.__rpcBrowsers = {};
 
-			const initBrowser = (browser: BrowserMp): void => {
+			const initBrowser = (browser: Browser): void => {
 				const id = generateId();
 
 				Object.keys(glob.__rpcBrowsers).forEach((key) => {
@@ -233,7 +233,7 @@ if (!glob[PROCESS_EVENT]) {
 	register(TRIGGER_EVENT, ([name, args], info) => callEvent(name, args, info));
 }
 
-function passEventToBrowser(browser: BrowserMp, data: Event, ignoreNotFound: boolean): void {
+function passEventToBrowser(browser: Browser, data: Event, ignoreNotFound: boolean): void {
 	const raw = stringifyData(data);
 
 	browser.execute(
@@ -253,7 +253,7 @@ function callProcedure<T = any>(name: string, args: any, info: ProcedureListener
 	return Promise.resolve(listener(args, info));
 }
 
-function sendEventData(event: Event, player?: PlayerMp) {
+function sendEventData(event: Event, player?: Player) {
 	const callEnvFunc = {
 		client: (event: string, ...args: any[]) => mp.events.callRemote(event, ...args),
 		server: (event: string, ...args: any[]) => player!.call(event, [...args])
@@ -387,7 +387,7 @@ export function callServer<T = any>(name: string, args?: any, options: CallOptio
 	return promiseTimeout(_callServer(name, args, extraData), options.timeout);
 }
 
-function _callClient<T = any>(player: PlayerMp, name: string, args?: any, extraData: any = {}): Promise<T> {
+function _callClient<T = any>(player: Player, name: string, args?: any, extraData: any = {}): Promise<T> {
 	switch (environment) {
 		case 'client':
 			return call(name, args);
@@ -454,7 +454,7 @@ function _callClient<T = any>(player: PlayerMp, name: string, args?: any, extraD
  * @param options - Any options.
  * @returns The result from the procedure.
  */
-export function callClient<T = any>(player: PlayerMp | string, name?: string | any, args?: any, options: CallOptions = {}): Promise<T> {
+export function callClient<T = any>(player: Player | string, name?: string | any, args?: any, options: CallOptions = {}): Promise<T> {
 	switch (environment) {
 		case 'client': {
 			options = args || {};
@@ -507,10 +507,10 @@ export function callClient<T = any>(player: PlayerMp | string, name?: string | a
 		extraData.noRet = 1;
 	}
 
-	return promiseTimeout(_callClient(player as PlayerMp, name, args, extraData), options.timeout);
+	return promiseTimeout(_callClient(player as Player, name, args, extraData), options.timeout);
 }
 
-function _callBrowser<T = any>(browser: BrowserMp, name: string, args?: any, extraData: any = {}): Promise<T> {
+function _callBrowser<T = any>(browser: Browser, name: string, args?: any, extraData: any = {}): Promise<T> {
 	return new Promise((resolve) => {
 		const id = generateId();
 
@@ -535,7 +535,7 @@ function _callBrowser<T = any>(browser: BrowserMp, name: string, args?: any, ext
 	});
 }
 
-function _callBrowsers<T = any>(player: PlayerMp, name: string, args?: any, extraData: any = {}): Promise<T> {
+function _callBrowsers<T = any>(player: Player, name: string, args?: any, extraData: any = {}): Promise<T> {
 	switch (environment) {
 		case 'client': {
 			const browserId = glob.__rpcBrowserProcedures[name];
@@ -555,7 +555,7 @@ function _callBrowsers<T = any>(player: PlayerMp, name: string, args?: any, extr
 			return _callClient(player, '__rpc:callBrowsers', [name, args, Number(extraData.noRet)], extraData);
 
 		case 'cef':
-			return _callClient(null as unknown as PlayerMp, '__rpc:callBrowsers', [name, args, Number(extraData.noRet)], extraData);
+			return _callClient(null as unknown as Player, '__rpc:callBrowsers', [name, args, Number(extraData.noRet)], extraData);
 	}
 }
 
@@ -570,7 +570,7 @@ function _callBrowsers<T = any>(player: PlayerMp, name: string, args?: any, extr
  * @param options - Any options.
  * @returns The result from the procedure.
  */
-export function callBrowsers<T = any>(player: PlayerMp | string, name?: string | any, args?: any, options: CallOptions = {}): Promise<T> | undefined {
+export function callBrowsers<T = any>(player: Player | string, name?: string | any, args?: any, options: CallOptions = {}): Promise<T> | undefined {
 	let promise;
 	const extraData: any = {};
 
@@ -591,7 +591,7 @@ export function callBrowsers<T = any>(player: PlayerMp | string, name?: string |
 				extraData.noRet = 1;
 			}
 
-			promise = _callBrowsers(null as unknown as PlayerMp, name, args, extraData);
+			promise = _callBrowsers(null as unknown as Player, name, args, extraData);
 			break;
 		}
 
@@ -606,7 +606,7 @@ export function callBrowsers<T = any>(player: PlayerMp | string, name?: string |
 				extraData.noRet = 1;
 			}
 
-			promise = _callBrowsers(player as PlayerMp, name, args, extraData);
+			promise = _callBrowsers(player as Player, name, args, extraData);
 			break;
 	}
 
@@ -628,7 +628,7 @@ export function callBrowsers<T = any>(player: PlayerMp | string, name?: string |
  * @param options - Any options.
  * @returns The result from the procedure.
  */
-export function callBrowser<T = any>(browser: BrowserMp, name: string, args?: any, options: CallOptions = {}): Promise<T> {
+export function callBrowser<T = any>(browser: Browser, name: string, args?: any, options: CallOptions = {}): Promise<T> {
 	if (environment !== 'client') {
 		return Promise.reject(`callBrowser can only be used in the client environment - ("${name}")`);
 	}
@@ -717,7 +717,7 @@ export function trigger(name: string, args?: any) {
  * @param name - The name of the event.
  * @param args - Any parameters for the event.
  */
-export function triggerClient(player: PlayerMp | string, name?: string | any, args?: any) {
+export function triggerClient(player: Player | string, name?: string | any, args?: any) {
 	switch (environment) {
 		case 'client': {
 			args = name;
@@ -756,7 +756,7 @@ export function triggerClient(player: PlayerMp | string, name?: string | any, ar
 		}
 	}
 
-	void _callClient(player as PlayerMp, TRIGGER_EVENT, [name, args], { noRet: 1 });
+	void _callClient(player as Player, TRIGGER_EVENT, [name, args], { noRet: 1 });
 }
 
 /**
@@ -784,7 +784,7 @@ export function triggerServer(name: string, args?: any) {
  * @param name - The name of the event.
  * @param args - Any parameters for the event.
  */
-export function triggerBrowsers(player: PlayerMp | string, name?: string | any, args?: any) {
+export function triggerBrowsers(player: Player | string, name?: string | any, args?: any) {
 	switch (environment) {
 		case 'client':
 		case 'cef': {
@@ -810,7 +810,7 @@ export function triggerBrowsers(player: PlayerMp | string, name?: string | any, 
 		}
 	}
 
-	void _callClient(player as PlayerMp, TRIGGER_EVENT_BROWSERS, [name, args], { noRet: 1 });
+	void _callClient(player as Player, TRIGGER_EVENT_BROWSERS, [name, args], { noRet: 1 });
 }
 
 /**
@@ -822,7 +822,7 @@ export function triggerBrowsers(player: PlayerMp | string, name?: string | any, 
  * @param name - The name of the event.
  * @param args - Any parameters for the event.
  */
-export function triggerBrowser(browser: BrowserMp, name: string, args?: any) {
+export function triggerBrowser(browser: Browser, name: string, args?: any) {
 	if (environment !== 'client') {
 		throw new Error(`callBrowser can only be used in the client environment - ("${name}")`);
 	}
